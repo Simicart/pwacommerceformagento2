@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Event/etc/events.xsd">
+    <event name="admin_system_config_changed_section_simipwa">
+        <observer name="simipwa_create_sw_file" 
+        	instance="Simi\Simipwa\Observer\Createswfile"/>
+    </event>
+</config>

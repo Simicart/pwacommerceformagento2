@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @copyright Copyright (c) 2017 www.tigren.com
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Simi_Simipwa::general" title="SimiCart Progressive Web App" sortOrder="52">
+                    <resource id="Simi_Simipwa::device_manager" title="Manager Devices" sortOrder="10"/>
+                    <resource id="Simi_Simipwa::notification_manager" title="Manager Notification" sortOrder="20"/>
+                    <resource id="Simi_Simipwa::simipwa_settings" title="SimiCart PWA Settings" sortOrder="30"/>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

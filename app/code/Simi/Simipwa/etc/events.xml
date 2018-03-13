@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Event/etc/events.xsd">
+    <event name="simi_simiconnector_model_server_initialize">
+        <observer name="simi_simiconnector_model_server_initialize"
+                  instance="Simi\Simipwa\Observer\SimiconnectorModelServerInitialize" />
+    </event>
+    <event name="simiconnector_get_storeview_info_after">
+        <observer name="simiconnector_get_storeview_info_after"
+                  instance="Simi\Simipwa\Observer\AddSiteMapToAPIGetStoreview" />
+    </event>
+</config>

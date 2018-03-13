@@ -1,0 +1,32 @@
+#connector-key-form .key-label, #connector-key-form .key-element, #connector-key-form .key-element p {
+    display: inline-block;
+    vertical-align: top;
+    line-height: 30px;
+}
+
+#connector-key-form .key-element button{
+    display: inline-block;
+}
+
+#connector-key-form .key-label span em {
+    color: #EB5202;
+    vertical-align: middle;
+}
+
+#connector-key-form .key-input {
+    width: 35%;
+}
+
+#connector-key-form .key-input input {
+    width: 100%;
+}
+
+#edit_form .mage-suggest{
+    margin: 0 0 6px;
+    padding: 3px;
+    width: 67.999999997%;
+}
+
+#edit_form .mage-suggest:after{
+    content: '\e013';
+}

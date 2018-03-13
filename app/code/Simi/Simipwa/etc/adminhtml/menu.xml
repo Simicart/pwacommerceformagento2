@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Simi. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
+    <menu>
+        <add id="Simi_Simipwa::simipwa" title="Simicart PWA" module="Simi_Simipwa"  sortOrder="20" dependsOnModule="Simi_Simipwa" resource="Simi_Simipwa::general"/>
+
+        <add id="Simi_Simipwa::device_manager" title="Manage PWA Device" module="Simi_Simipwa" sortOrder="10" parent="Simi_Simipwa::simipwa" action="simipwaadmin/device/" resource="Simi_Simipwa::device_manager"/>
+        <add id="Simi_Simipwa::notification_manager" title="Manager Notification" module="Simi_Simipwa" sortOrder="40" parent="Simi_Simipwa::simipwa" resource="Simi_Simipwa::notification_manager" action="simipwaadmin/notification/"/>
+        <add id="Simi_Simipwa::simipwa_settings" title="Settings" module="Simi_Simipwa" sortOrder="9999" parent="Simi_Simipwa::simipwa" resource="Simi_Simipwa::simipwa_settings" action="adminhtml/system_config/edit/section/simipwa"/>
+    </menu>
+</config>
