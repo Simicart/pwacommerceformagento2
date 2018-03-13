@@ -27,11 +27,6 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @var order model
      */
     public $resource;
-
-    /**
-     * @var \Simi\Simiconnector\Helper\Website
-     * */
-    public $websiteHelper;
     public $simiObjectManager;
     public $storeview_id;
 
@@ -43,7 +38,6 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @param \Simi\Simipwa\Model\ResourceModel\Device\CollectionFactory $collectionFactory
      * @param \Magento\Framework\Module\Manager $moduleManager
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
-     * @param \Simi\Simiconnector\Helper\Website $websiteHelper
      * @param \Magento\Framework\ObjectManagerInterface $simiObjectManager
      * @param array $data
      */
@@ -54,7 +48,6 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Simi\Simipwa\Model\ResourceModel\Device\CollectionFactory $collectionFactory,
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Simi\Simiconnector\Helper\Website $websiteHelper,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
     ) {
@@ -65,8 +58,6 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->moduleManager = $moduleManager;
         $this->resource = $resourceConnection;
         $this->deviceFactory = $deviceFactory;
-        $this->websiteHelper = $websiteHelper;
-
         parent::__construct($context, $backendHelper, $data);
     }
 

@@ -27,7 +27,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Framework\Registry $registry,
         array $data = []
     ) {
-    
+
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -143,18 +143,15 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                    
                    
                     function removeValueFromField(vl){
-                        if($("devices_pushed").value.search(vl) == 0){
-                                if ($("devices_pushed").value.search(vl+", ") != -1)
-                                    $("devices_pushed").value = $("devices_pushed").value.replace(vl+", ","");
-                                else
-                                    $("devices_pushed").value = $("devices_pushed").value.replace(vl,"");
-                            }else{
-                                $("devices_pushed").value = $("devices_pushed").value.replace(", "+ vl,"");
-                            }
+                        var allIds = $("devices_pushed").value.split(", ");
+                        var ids = allIds.filter(e => parseInt(e) !== parseInt(vl));
+                        $("devices_pushed").value = ids.join(", ");
+                        
                     }
 
                     function checkboxDeviceAllChecked(el){
                         var device_grid_trs = document.querySelectorAll(".simi-device-checkbox");
+
                         for (var i=0; i< device_grid_trs.length; i++) {
                             var e = device_grid_trs[i];
                             if (e.id != "checkall_device_siminotification")
@@ -165,6 +162,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     function toogleCheckAllDevice(){
                         var device_grid_trs = document.querySelectorAll(".simi-device-checkbox");
                         var el = device_grid_trs[0];
+
                         if(el.checked == true){
                             for (var i=0; i< device_grid_trs.length; i++) {
                                 var e = device_grid_trs[i];

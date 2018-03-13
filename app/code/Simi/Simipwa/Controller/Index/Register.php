@@ -28,7 +28,7 @@ class Register extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $this->zendRequest = $this->_objectManager->get('Simi\Simiconnector\Helper\RequestHttp');
+        $this->zendRequest = $this->_objectManager->get('Simi\Simipwa\Helper\RequestHttp');
         $data            = $this->zendRequest->getRawBody();
         $data = (array)json_decode($data);
         $agent = $this->_objectManager->get('Simi\Simipwa\Model\Device');

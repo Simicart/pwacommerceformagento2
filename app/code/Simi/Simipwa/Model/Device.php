@@ -43,7 +43,7 @@ class Device extends AbstractModel
         Collection $resourceCollection,
         Website $websiteHelper
     ) {
-    
+
 
         $this->simiObjectManager = $simiObjectManager;
         $this->websiteHelper = $websiteHelper;
@@ -84,7 +84,11 @@ class Device extends AbstractModel
         $public_key = 'BFn4qEo_D1R50vPl58oOPfkQgbTgaqmstMhIzWyVgfgbMQPtFk94X-ThjG0hfOTSAQUBcCBXpPHeRMN7cqDDPaE';
         $private_key = 'r2nph41fesUhfHitp1wbldZvIu_I51Aiy-S8w7fpv-U';
         //$api_key = 'AAAAwdkoDtM:APA91bGOxLHjmDeyzCj7Eix-8M1vHOkvhBUxFBUC_XWcUIksOrVtdI2vFYae-d1AlNRAmmb_RFHTCZw9CStzc-z2qJ50B1cCNhlpouO8Wkt_bBxzTq4HYq3IbxTqtolTMGJFBi4DPatv';
-        $device = $this->load($device_id)->getData();
+        $device = $this->load($device_id);
+        if(!$device->getId()){
+            return false;
+        }
+        $device =$device->getData();
         $data['subscription'] = [
             "endpoint" => $device['endpoint'],
             "expirationTime" => null,

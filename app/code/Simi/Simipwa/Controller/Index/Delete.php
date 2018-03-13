@@ -21,7 +21,7 @@ class Delete extends \Magento\Framework\App\Action\Action
     {
         parent::__construct($context);
         $this->storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        $this->zendRequest = $this->_objectManager->get('Simi\Simiconnector\Helper\RequestHttp');
+        $this->zendRequest = $this->_objectManager->get('Simi\Simipwa\Helper\RequestHttp');
     }
 
     /**

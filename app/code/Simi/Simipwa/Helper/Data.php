@@ -11,6 +11,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface as StoreManager;
 use \Magento\Framework\DataObject;
+use \Magento\Directory\Model\ResourceModel\Country\CollectionFactory as CountryCollectionFactory;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -30,17 +31,29 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public $storeManager;
 
     /**
+     * @var \Magento\Framework\HTTP\Adapter\FileTransferFactory
+     */
+    public $httpFactory;
+
+    /**
+     * @var \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
+     */
+    public $countryCollectionFactory;
+
+    /**
      * Data constructor.
      * @param Context $context
      * @param ObjectManagerInterface $manager
      * @param DirectoryList $directoryList
      * @param StoreManager $storemanager
      */
-    public function __construct(Context $context, ObjectManagerInterface $manager, DirectoryList $directoryList, StoreManager $storemanager)
+    public function __construct(Context $context, ObjectManagerInterface $manager, DirectoryList $directoryList, StoreManager $storemanager, CountryCollectionFactory $countryCollectionFactory)
     {
+        $this->countryCollectionFactory = $countryCollectionFactory;
         $this->directionList = $directoryList;
         $this->objectManager = $manager;
         $this->storeManager = $storemanager;
+        $this->httpFactory = $this->objectManager->create('\Magento\Framework\HTTP\Adapter\FileTransferFactory');
         parent::__construct($context);
     }
 
@@ -185,5 +198,60 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return false;
+    }
+
+    public function countArray($array)
+    {
+        return count($array);
+    }
+
+    /**
+     * Upload image and return uploaded image file name or false
+     *
+     * @throws Mage_Core_Exception
+     * @param string $scope the request key for file
+     * @return bool|string
+     */
+    public function uploadImage($scope)
+    {
+        $adapter = $this->httpFactory->create();
+        /*
+         *
+         * Comment to avoid using direct new class initializing function
+         * Uncomment it if customer want to use image validation back (Size of image and file
+         * size)
+         *
+         *
+         *
+        $adapter->addValidator(new \Zend_Validate_File_ImageSize($this->imageSize));
+        $adapter->addValidator(
+            new \Zend_Validate_File_FilesSize(['max' => self::MAX_FILE_SIZE])
+        );
+         *
+         */
+        if ($adapter->isUploaded($scope)) {
+            // validate image
+            if (!$adapter->isValid($scope)) {
+                throw new \Simi\Simipwa\Helper\SimiException(__('Uploaded image is not valid.'));
+            }
+            $uploader = $this->fileUploaderFactory->create(['fileId' => $scope]);
+            $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+            $uploader->setAllowRenameFiles(true);
+            $uploader->setFilesDispersion(false);
+            $uploader->setAllowCreateFolders(true);
+            $ext = $uploader->getFileExtension();
+            if ($uploader->save($this->getBaseDir(), $scope . time() . '.' . $ext)) {
+                return 'Simiconnector/' . $uploader->getUploadedFileName();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return \Magento\Directory\Model\ResourceModel\Country\Collection
+     */
+    public function getCountryCollection()
+    {
+        return $this->countryCollectionFactory->create();
     }
 }

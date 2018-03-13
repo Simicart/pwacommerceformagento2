@@ -14,7 +14,6 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Simi\Simipwa\Model\ResourceModel\Notification as NotificationRM;
 use Simi\Simipwa\Model\ResourceModel\Notification\Collection;
-use Simi\Simiconnector\Helper\Website;
 
 class Notification extends AbstractModel
 {
@@ -31,7 +30,6 @@ class Notification extends AbstractModel
      * @param Registry $registry
      * @param NotificationRM $resource
      * @param Collection $resourceCollection
-     * @param Website $websiteHelper
      */
     public function __construct(
         Context $context,
@@ -39,14 +37,10 @@ class Notification extends AbstractModel
         Registry $registry,
         /**/
         NotificationRM $resource,
-        Collection $resourceCollection,
-        Website $websiteHelper
+        Collection $resourceCollection
     ) {
     
-
         $this->simiObjectManager = $simiObjectManager;
-        $this->websiteHelper = $websiteHelper;
-
         parent::__construct(
             $context,
             $registry,

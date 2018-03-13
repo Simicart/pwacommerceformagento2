@@ -70,20 +70,23 @@ class Save extends Action
                 if ($data['device_id'] && ($data['device_id']!= '')) {
                     $device_ids = explode(',', $data['device_id']);
                 }
-                foreach ($simiObjectManager->get('Simi\Simipwa\Model\Device')->getCollection() as $device) {
-                    if ($device_ids && count($device_ids) && !in_array($device->getId(), $device_ids))
-                        continue;
-                    $send = $simiObjectManager->get('Simi\Simipwa\Model\Device')->send($device->getId());
+
+                foreach ($device_ids as $index => $device) {
+                    $send = $simiObjectManager->get('Simi\Simipwa\Model\Device')->send($device);
                     if (!$send) {
-                        $device->delete();
-                        unset($device_ids[$key]);
+                        $deviceInfo = $simiObjectManager->get('Simi\Simipwa\Model\Device')->load($device);
+                        if($deviceInfo->getId()){
+                            $deviceInfo->delete();
+                        }
+
+                        unset($device_ids[$index]);
                     }
                 }
                 if ($device_ids && count($device_ids)) {
                     $model->setData('device_id', implode(',', $device_ids));
-                } 
+                }
                 $model->setCreatedTime(date('Y-m-d H:i:s'))
-                        ->setStatus(1);
+                    ->setStatus(1);
                 $model->save();
             }
             $this->_redirect('*/*/');

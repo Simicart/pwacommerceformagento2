@@ -39,7 +39,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
      * @param \Magento\Store\Model\System\Store $systemStore
-     * @param \Simi\Simipwa\Helper\Website $websiteHelper
      * @param \Simi\Simipwa\Model\DeviceFactory $deviceFactory
      * @param \Magento\Framework\Json\EncoderInterface $jsonEncoder
      * @param \Magento\Catalog\Model\CategoryFactory $categoryFactory
@@ -50,7 +49,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\Store\Model\System\Store $systemStore,
-        \Simi\Simiconnector\Helper\Website $websiteHelper,
         \Simi\Simipwa\Model\DeviceFactory $deviceFactory,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
@@ -59,7 +57,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     
 
         $this->deviceFactory = $deviceFactory;
-        $this->websiteHelper = $websiteHelper;
         $this->systemStore = $systemStore;
         $this->jsonEncoder = $jsonEncoder;
         $this->categoryFactory = $categoryFactory;

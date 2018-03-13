@@ -13,10 +13,10 @@ class Simipwa extends \Magento\Framework\View\Element\Template
     public $config;
 
     /**
-     * @param \Simi\Simiconnector\Block\Context $context
+     * @param \Simi\Simipwa\Block\Context $context
      * @param \Magento\Framework\UrlFactory $urlFactory
      */
-    public function __construct(\Simi\Simiconnector\Block\Context $context)
+    public function __construct(\Simi\Simipwa\Block\Context $context)
     {
         $this->config        = $context->getConfig();
         parent::__construct($context);

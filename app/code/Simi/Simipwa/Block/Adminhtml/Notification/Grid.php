@@ -27,10 +27,6 @@ class Grid extends Extended
      */
     public $resource;
 
-    /**
-     * @var \Simi\Simiconnector\Helper\Website
-     * */
-    public $websiteHelper;
 
     /**
      * Grid constructor.
@@ -40,7 +36,6 @@ class Grid extends Extended
      * @param \Simi\Simipwa\Model\ResourceModel\Notification\CollectionFactory $collectionFactory
      * @param \Magento\Framework\Module\Manager $moduleManager
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
-     * @param \Simi\Simiconnector\Helper\Website $websiteHelper
      * @param array $data
      */
     public function __construct(
@@ -50,7 +45,6 @@ class Grid extends Extended
         \Simi\Simipwa\Model\ResourceModel\Notification\CollectionFactory $collectionFactory,
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
     ) {
     
@@ -59,7 +53,6 @@ class Grid extends Extended
         $this->moduleManager = $moduleManager;
         $this->resource = $resourceConnection;
         $this->notificationFactory = $notificationFactory;
-        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
