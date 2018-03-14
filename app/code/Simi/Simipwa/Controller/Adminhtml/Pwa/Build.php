@@ -72,6 +72,10 @@ class Build extends Action
                 throw new \Exception(__('Sorry, we cannot extract PWA package.'), 4);
             }
 
+            //move service worker
+            $path_to_file = './pwa/service-worker.js';
+            file_put_contents('./service-worker.js',file_get_contents($path_to_file));
+
             //update index.html file 
             $path_to_file = './pwa/index.html';
             $file_contents = file_get_contents($path_to_file);
@@ -143,7 +147,7 @@ class Build extends Action
             $path_to_file = './pwa/js/config/config.js';
             file_put_contents($path_to_file, $msConfigs);
             
-            $this->messageManager->addSuccess(__('PWA Application was Built Successfully. Please go to '.$url.'pwa to check.'));
+            $this->messageManager->addSuccess(__('PWA Application was Built Successfully. To review it, please go to '.$url.'pwa/'));
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
         }
