@@ -1,37 +1,50 @@
 <?php if ($block->IsEnableForWebsite()) : ?>
-    <script>
+    <script type="text/javascript">
+        var isEnablePWA = "<?php echo $block->getConfigValue('simipwa/general/pwa_enable')?>";
+
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             console.log('Service Worker and Push is supported');
-            var sw = "<?php echo $block->getBaseUrl() ?>" + "sw.js";
-            navigator.serviceWorker.register(sw)
-                .then(function (swReg) {
-                    console.log('Service Worker is registered', '');
 
-                    swRegistration = swReg;
-                    initializeUI();
-                    if (navigator.onLine) {
-                        swReg.update();
-                    }
-                    swRegistration.onupdatefound = function () {
-                        const installingWorker = swRegistration.installing;
-                        installingWorker.onstatechange = function (){
-                            if (installingWorker.state === 'installed') {
-                                if (navigator.serviceWorker.controller) {
-                                    swReg.update();
-                                } else {
-                                    console.log('Content is cached for offline use.');
-                                }
-                            }
-                        };
-                    };
-
-                })
-                .catch(function (error) {
-                    console.error('Service Worker Error', error);
+            if(parseInt(isEnablePWA) === 0){
+                navigator.serviceWorker.ready.then(function (registration) {
+                    registration.unregister();
+                    console.log('PWA is disabled');
+                    window.location.reload();
                 });
-        } else {
-            console.warn('Push messaging is not supported');
-            console.log('Push Not Supported');
-        }
+            }
+            var sw = "<?php echo $block->getBaseUrl() ?>" + "sw.js";
+
+            if(parseInt(isEnablePWA) === 1){
+                navigator.serviceWorker.register(sw)
+                    .then(function (swReg) {
+                        console.log('Service Worker is registered', '');
+
+                        swRegistration = swReg;
+                        initializeUI();
+                        if (navigator.onLine) {
+                            swReg.update();
+                        }
+                        swRegistration.onupdatefound = function () {
+                            const installingWorker = swRegistration.installing;
+                            installingWorker.onstatechange = function (){
+                                if (installingWorker.state === 'installed') {
+                                    if (navigator.serviceWorker.controller) {
+                                        swReg.update();
+                                    } else {
+                                        console.log('Content is cached for offline use.');
+                                    }
+                                }
+                            };
+                        };
+
+                    })
+                    .catch(function (error) {
+                        console.error('Service Worker Error', error);
+                    });
+                } else {
+                    console.warn('Push messaging is not supported');
+                    console.log('Push Not Supported');
+                }
+            }
     </script>
 <?php endif ?>
