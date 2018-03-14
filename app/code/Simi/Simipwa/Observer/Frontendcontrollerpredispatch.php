@@ -112,10 +112,12 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $isExcludedCase = true;
             }
         }
-        if((($tablet_browser > 0)||($mobile_browser > 0)) && $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site') && !$isExcludedCase){
+        
+        if((($tablet_browser > 0)||($mobile_browser > 0)) && !$isExcludedCase){
             require 'pwa/index.html';
             exit();
         }
+        
         if (!$isExcludedCase) {
             $url = $pwa_url.$uri;
             header("Location: ".$url);

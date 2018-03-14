@@ -68,10 +68,11 @@
                 <field id="pwa_enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Redirection</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Redirect All mobile devices to PWA Homepage URL</comment>
+                    <comment>Enable PWA for your mobile users</comment>
                 </field>
+                <!--
                 <field id="pwa_main_url_site"  translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Use Domain Website For PWA</label>
+                    <label>Use Website Domain For PWA</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="*/*/pwa_enable">1</field>
@@ -81,8 +82,10 @@
                     <label>PWA Homepage URL</label>
                     <depends>
                         <field id="*/*/pwa_main_url_site">0</field>
+                        <field id="*/*/pwa_enable">1</field>
                     </depends>
                 </field>
+                -->
                 <field id="pwa_excluded_paths" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PWA Excluded Paths</label>
                     <comment>Separated by comma, urls that contain any of the keys above would be excluded from Web App. Eg: checkout/onepage</comment>
