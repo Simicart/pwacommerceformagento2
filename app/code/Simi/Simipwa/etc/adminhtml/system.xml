@@ -46,9 +46,9 @@
             <group id="general" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Advanced PWA Configuration</label>
                 <field id="pwa_enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
+                    <label>Enable Redirection</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Visit https://www.simicart.com/pwa.html to get details and build Advanced Progressive Web App</comment>
+                    <comment>Redirect All mobile devices to PWA Homepage URL</comment>
                 </field>
                 <field id="pwa_url" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PWA Homepage URL</label>
@@ -63,11 +63,11 @@
                         <field id="*/*/pwa_enable">1</field>
                     </depends>
                 </field>
-                <field id="clear_cache" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sync Sitemap Url</label>
-                    <depends>
-                        <field id="*/*/pwa_enable">1</field>
-                    </depends>
+                <field id="logo_url" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PWA Logo URL</label>
+                </field>
+                <field id="clear_cache" translate="label" type="text" sortOrder="499" showInDefault="1">
+                    <label>Action</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Form\SyncButton</frontend_model>
                 </field>
             </group>
