@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <simipwa>
+            <homescreen>
+                <app_name>Simicart PWA</app_name>
+                <app_short_name>Simicart PWA | Progressive Web App</app_short_name>
+                <home_screen_icon>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png</home_screen_icon>
+            </homescreen>
+            <notification>
+                <enable>0</enable>
+                <icon_url>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png</icon_url>
+            </notification>
+        </simipwa>
+    </default>
+</config>

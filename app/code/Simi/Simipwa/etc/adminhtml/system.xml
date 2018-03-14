@@ -30,14 +30,34 @@
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="home_screen_title" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1">
-                    <label>Caption</label>
+                <field id="app_name" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1">
+                    <label>App Name</label>
+                    <depends>
+                        <field id="*/*/homescreen_enable">1</field>
+                    </depends>
+                </field>
+                <field id="app_short_name" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1">
+                    <label>App Short Name</label>
                     <depends>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
                 </field>
                 <field id="home_screen_icon" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1">
                     <label>Icon URL (png)</label>
+                    <depends>
+                        <field id="*/*/homescreen_enable">1</field>
+                    </depends>
+                </field>
+                <field id="theme_color" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1">
+                    <label>Theme Color</label>
+                    <frontend_model>Simi\Simipwa\Block\System\Config\Color</frontend_model>
+                    <depends>
+                        <field id="*/*/homescreen_enable">1</field>
+                    </depends>
+                </field>
+                <field id="background_color" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1">
+                    <label>Background Color</label>
+                    <frontend_model>Simi\Simipwa\Block\System\Config\Color</frontend_model>
                     <depends>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
@@ -50,10 +70,17 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Visit https://www.simicart.com/pwa.html to get details and build Advanced Progressive Web App</comment>
                 </field>
+                <field id="pwa_main_url_site"  translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Domain Website For PWA</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="*/*/pwa_enable">1</field>
+                    </depends>
+                </field>
                 <field id="pwa_url" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PWA Homepage URL</label>
                     <depends>
-                        <field id="*/*/pwa_enable">1</field>
+                        <field id="*/*/pwa_main_url_site">0</field>
                     </depends>
                 </field>
                 <field id="pwa_excluded_paths" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">

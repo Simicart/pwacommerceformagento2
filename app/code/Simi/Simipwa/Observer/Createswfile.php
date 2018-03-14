@@ -30,10 +30,10 @@ class Createswfile implements ObserverInterface
 
         $scopeConfigInterface = $this->simiObjectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $icon = $scopeConfigInterface->getValue('simipwa/notification/icon_url')?
-        $scopeConfigInterface->getValue('simipwa/notification/icon_url'):
-        "https://www.simicart.com/skin/frontend/default/simicart2.0/images/simicart/logo2.png";
-                       
+        $icon = $scopeConfigInterface->getValue('simipwa/notification/icon_url') ?
+            $scopeConfigInterface->getValue('simipwa/notification/icon_url') :
+            "https://www.simicart.com/skin/frontend/default/simicart2.0/images/simicart/logo2.png";
+
         $swcontent = "
 
         self.addEventListener('install', function (event) {
@@ -122,8 +122,8 @@ class Createswfile implements ObserverInterface
 
                                 title = data.notification.notice_title;
                                 var message = data.notification.notice_content;
-                                var icon = '".$icon.
-                                "';
+                                var icon = '" . $icon .
+            "';
                                 var url = '/';
                                 if (data.notification.notice_url) {
                                     url = data.notification.notice_url;
@@ -183,76 +183,86 @@ class Createswfile implements ObserverInterface
         });";
         try {
             $fileToSave = $this->simiObjectManager
-                ->get('\Magento\Framework\App\Filesystem\DirectoryList')
-                ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'sw.js';
+                    ->get('\Magento\Framework\App\Filesystem\DirectoryList')
+                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'sw.js';
             if (file_exists($fileToSave)) {
                 $this->simiObjectManager
-                ->get('\Magento\Framework\Filesystem\Io\File')
-                ->rm($fileToSave );
+                    ->get('\Magento\Framework\Filesystem\Io\File')
+                    ->rm($fileToSave);
             }
             file_put_contents($fileToSave, $swcontent);
-            chmod($fileToSave , 0777);
+            chmod($fileToSave, 0777);
 
         } catch (\Exception $exception) {
 
         }
 
         if ($scopeConfigInterface->getValue('simipwa/homescreen/homescreen_enable')) {
-            $title = $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_title')?
-                    $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_title'):
-                    'Title';
-            $icon = $title = $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon')?
-                    $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon'):
-                    'https://www.simicart.com/skin/frontend/default/simicart2.0/images/simicart/logo2.png';
+            $appName = $scopeConfigInterface->getValue('simipwa/homescreen/app_name') ?
+                $scopeConfigInterface->getValue('simipwa/homescreen/app_name') :
+                'Title';
+
+            $appShortName = $scopeConfigInterface->getValue('simipwa/homescreen/app_short_name') ?
+                $scopeConfigInterface->getValue('simipwa/homescreen/app_short_name') :
+                'Short Title';
+            $icon = $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon') ?
+                $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon') :
+                'https://www.simicart.com/skin/frontend/default/simicart2.0/images/simicart/logo2.png';
+
+            $themeColor = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') ?
+                $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') :
+                '#2196F3';
+            $backgroundColor = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') ? $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') :
+                '#ffffff';
             $manifestContent = '{
-              "short_name": "'.$title.'",
-              "name": "'.$title.'",
+              "short_name": "' . $appName . '",
+              "name": "' . $appShortName . '",
               "icons": [
                 {
-                  "src": "'.$icon.'",
+                  "src": "' . $icon . '",
                   "sizes": "192x192",
                   "type": "image/png"
                 },
                 {
-                  "src": "'.$icon.'",
+                  "src": "' . $icon . '",
                   "sizes": "256x256",
                   "type": "image/png"
                 },
                 {
-                  "src": "'.$icon.'",
+                  "src": "' . $icon . '",
                   "sizes": "384x384",
                   "type": "image/png"
                 },
                 {
-                  "src": "'.$icon.'",
+                  "src": "' . $icon . '",
                   "sizes": "512x512",
                   "type": "image/png"
                 }
               ],
               "start_url": "/",
               "display": "standalone",
-              "theme_color": "#3399cc",
-              "background_color": "#ffffff",
+              "theme_color": "' . $themeColor . '",
+              "background_color": "'.$backgroundColor.'",
               "gcm_sender_id" : "832571969235"
             }';
             $fileToSave = $this->simiObjectManager
-                ->get('\Magento\Framework\App\Filesystem\DirectoryList')
-                ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'manifest.json';
+                    ->get('\Magento\Framework\App\Filesystem\DirectoryList')
+                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'manifest.json';
             if (file_exists($fileToSave)) {
                 $this->simiObjectManager
-                ->get('\Magento\Framework\Filesystem\Io\File')
-                ->rm($fileToSave );
+                    ->get('\Magento\Framework\Filesystem\Io\File')
+                    ->rm($fileToSave);
             }
             file_put_contents($fileToSave, $manifestContent);
-            chmod($fileToSave , 0777);
+            chmod($fileToSave, 0777);
         } else {
             $fileToSave = $this->simiObjectManager
-                ->get('\Magento\Framework\App\Filesystem\DirectoryList')
-                ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'manifest.json';
+                    ->get('\Magento\Framework\App\Filesystem\DirectoryList')
+                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'manifest.json';
             if (file_exists($fileToSave)) {
                 $this->simiObjectManager
-                ->get('\Magento\Framework\Filesystem\Io\File')
-                ->rm($fileToSave );
+                    ->get('\Magento\Framework\Filesystem\Io\File')
+                    ->rm($fileToSave);
             }
         }
     }

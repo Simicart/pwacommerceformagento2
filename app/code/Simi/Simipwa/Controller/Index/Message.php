@@ -15,7 +15,7 @@ class Message extends \Magento\Framework\App\Action\Action
 {
 
     public $storeManager;
-    public  $scopeConfigInterface;
+    public $scopeConfigInterface;
 
     public function __construct(Context $context)
     {
@@ -47,8 +47,10 @@ class Message extends \Magento\Framework\App\Action\Action
             $message_info['image_url'] = $img;
         }
         $message_info['logo_icon'] = $this->scopeConfigInterface->getValue('simipwa/notification/icon_url');
-        if($this->scopeConfigInterface->getValue('simipwa/general/pwa_enable')){
-            $message_info['pwa_url'] = $this->scopeConfigInterface->getValue('simipwa/general/pwa_url');
+        if ($this->scopeConfigInterface->getValue('simipwa/general/pwa_enable')) {
+            if (!$this->scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site') && $this->scopeConfigInterface->getValue('simipwa/general/pwa_url')) {
+                $message_info['pwa_url'] = $this->scopeConfigInterface->getValue('simipwa/general/pwa_url');
+            }
         }
 
         $result = [
