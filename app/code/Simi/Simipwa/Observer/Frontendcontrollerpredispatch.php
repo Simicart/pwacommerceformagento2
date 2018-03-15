@@ -114,8 +114,12 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         }
         
         if((($tablet_browser > 0)||($mobile_browser > 0)) && !$isExcludedCase){
-            require 'pwa/index.html';
-            exit();
+            if (($pwaContent = @file_get_contents('./pwa/index.html')) &&
+                ($response = $observer->getResponse())    
+            ) {
+               $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
+               $response->setBody($pwaContent);
+            }
         }
         
         if (!$isExcludedCase) {

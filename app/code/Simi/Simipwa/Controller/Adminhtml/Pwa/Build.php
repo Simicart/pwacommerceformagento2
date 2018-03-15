@@ -78,9 +78,13 @@ class Build extends Action
 
             //update index.html file 
             $path_to_file = './pwa/index.html';
+            $excludedPaths = $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths');
+            $excludedPaths = $excludedPaths. ',' .
+                $this->_objectManager->get('Magento\Backend\Helper\Data')->getAreaFrontName();
             $file_contents = file_get_contents($path_to_file);
             $file_contents = str_replace('PAGE_TITLE_HERE',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('IOS_SPLASH_TEXT',$config['app-configs'][0]['app_name'],$file_contents);
+            $file_contents = str_replace('PWA_EXCLUDED_PATHS',$excludedPaths,$file_contents);
             file_put_contents($path_to_file,$file_contents);
 
             //update config.js file
@@ -98,7 +102,7 @@ class Build extends Action
 	    notification_api: "simipwa/index/",
 	    zopim_key: "'.$zopimKey.'",
 	    zopim_language: "en",
-	    base_name: "pwa",
+	    base_name: "/",
 	    show_social_login: {
 	        facebook: 1,
 	        google: 1,
