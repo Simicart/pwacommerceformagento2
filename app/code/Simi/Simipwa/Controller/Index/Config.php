@@ -31,7 +31,7 @@ class Config extends \Magento\Framework\App\Action\Action
         $scopeConfigInterface = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $result = array(
             'pwa' => array(
-                'enable' => (int)$scopeConfigInterface->getValue('simipwa/general/pwa_enable')
+                'enable' => (int)$scopeConfigInterface->getValue('simipwa/notification/enable')
             )
         );
 

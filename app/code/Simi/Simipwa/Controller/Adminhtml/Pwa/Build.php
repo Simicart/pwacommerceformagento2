@@ -23,7 +23,7 @@ class Build extends Action
             $app_image_logo = ($logoUrlSetting && $logoUrlSetting!='')?
                 $logoUrlSetting:
                 $this->_objectManager->get('\Magento\Theme\Block\Html\Header\Logo')->getLogoSrc();
-            
+
             if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
                 throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
 
@@ -31,7 +31,7 @@ class Build extends Action
             if (!$config || (!$config = json_decode($config, 1)))
                 throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
-            
+
             $buildFile = 'https://dashboard.simicart.com/pwa/package.zip';
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
@@ -40,19 +40,19 @@ class Build extends Action
             //create directory
             $filePath = $this->_objectManager
                     ->get('\Magento\Framework\Filesystem\DirectoryList')->getRoot() . $directoryToSave;
-            
+
             if (is_dir($filePath)) {
                 $this->remover_dir($filePath);
             }
             mkdir($filePath, 0777, true);
-            
+
             //download file
             file_get_contents($buildFile);
-            if (!isset($http_response_header[0]) || !is_string($http_response_header[0]) || 
+            if (!isset($http_response_header[0]) || !is_string($http_response_header[0]) ||
                 (strpos($http_response_header[0],'200') === false)) {
                 throw new \Exception(__('Sorry, we cannot get PWA package from SimiCart.'), 4);
             }
-            
+
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $buildFile);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -61,7 +61,7 @@ class Build extends Action
             $file = fopen($fileToSave, "w+");
             fputs($file, $data);
             fclose($file);
-            
+
             //unzip file
             $zip = new \ZipArchive;
             $res = $zip->open($fileToSave);
@@ -72,9 +72,18 @@ class Build extends Action
                 throw new \Exception(__('Sorry, we cannot extract PWA package.'), 4);
             }
 
-            //move service worker
+            //move service worker out to root
             $path_to_file = './pwa/service-worker.js';
             file_put_contents('./service-worker.js',file_get_contents($path_to_file));
+
+            //move favicon into pwa
+            try {
+                $path_to_file = './favicon.ico';
+                if ($favicon_content = file_get_contents($path_to_file))
+                    file_put_contents('./pwa/favicon.ico',$favicon_content);
+            } catch (\Exception $faviconException) {
+
+            }
 
             //update index.html file 
             $path_to_file = './pwa/index.html';
@@ -84,11 +93,11 @@ class Build extends Action
             $file_contents = file_get_contents($path_to_file);
             $file_contents = str_replace('PAGE_TITLE_HERE',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('IOS_SPLASH_TEXT',$config['app-configs'][0]['app_name'],$file_contents);
-            $file_contents = str_replace('PWA_EXCLUDED_PATHS',$excludedPaths,$file_contents);
+            $file_contents = str_replace('"PWA_EXCLUDED_PATHS"','"'.$excludedPaths.'"',$file_contents);
             file_put_contents($path_to_file,$file_contents);
 
             //update config.js file
-            
+
             $mixPanelToken = $scopeConfigInterface->getValue('simiconnector/mixpanel/token');
             $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
             $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
@@ -150,7 +159,7 @@ class Build extends Action
 
             $path_to_file = './pwa/js/config/config.js';
             file_put_contents($path_to_file, $msConfigs);
-            
+
             $this->messageManager->addSuccess(__('PWA Application was Built Successfully. To review it, please go to '.$url.'pwa/'));
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());

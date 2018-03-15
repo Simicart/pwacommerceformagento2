@@ -120,9 +120,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
                $response->setBody($pwaContent);
             }
-        }
-        
-        if (!$isExcludedCase) {
+        } else if (!$isExcludedCase) {
             $url = $pwa_url.$uri;
             header("Location: ".$url);
         }
