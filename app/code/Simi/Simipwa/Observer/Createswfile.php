@@ -212,7 +212,7 @@ class Createswfile implements ObserverInterface
             $themeColor = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') ?
                 $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') :
                 '#2196F3';
-            $backgroundColor = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') ? $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') :
+            $backgroundColor = $scopeConfigInterface->getValue('simipwa/homescreen/backrgound_color') ? $scopeConfigInterface->getValue('simipwa/homescreen/backrgound_color') :
                 '#ffffff';
             $manifestContent = '{
               "short_name": "' . $appName . '",
