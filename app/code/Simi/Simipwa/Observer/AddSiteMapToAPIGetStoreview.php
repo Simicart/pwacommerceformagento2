@@ -35,7 +35,10 @@ class AddSiteMapToAPIGetStoreview implements ObserverInterface
         if (isset($data['params']) && isset($data['params']['pwa'])) {
             $obj = $observer['object'];
             $info = $obj->storeviewInfo;
-            $siteMap = $this->simiObjectManager->get('\Simi\Simipwa\Helper\Data')->getSiteMaps($data['resourceid']);
+            $storeId = ($data['resourceid'] == 'default')?$this->simiObjectManager
+                ->get('\Magento\Store\Model\StoreManagerInterface')
+                ->getStore()->getId():$data['resourceid'];
+            $siteMap = $this->simiObjectManager->get('\Simi\Simipwa\Helper\Data')->getSiteMaps($storeId);
             if ($siteMap && isset($siteMap['sitemaps'])) {
                 $info['urls'] = $siteMap['sitemaps'];
             }
