@@ -29,9 +29,15 @@ class Config extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $scopeConfigInterface = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $filePath = $this->_objectManager
+                ->get('\Magento\Framework\Filesystem\DirectoryList')->getRoot() . '/pwa/';
+        $enable = (!$scopeConfigInterface->getValue('simipwa/general/pwa_enable') && !is_dir($filePath))?0:1;
         $result = array(
             'pwa' => array(
-                'enable' => (int)$scopeConfigInterface->getValue('simipwa/notification/enable')
+                //notification and offline
+                'enable_noti' => (int)$scopeConfigInterface->getValue('simipwa/notification/enable'),
+                //simicart advanced pwa
+                'enable' => $enable
             )
         );
 
