@@ -101,6 +101,7 @@ class Build extends Action
             $mixPanelToken = $scopeConfigInterface->getValue('simiconnector/mixpanel/token');
             $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
             $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
+            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_enabled')?'/':'pwa';
             $msConfigs = '
 	var SMCONFIGS = {
 	    merchant_url: "'.$url.'",
@@ -111,7 +112,7 @@ class Build extends Action
 	    notification_api: "simipwa/index/",
 	    zopim_key: "'.$zopimKey.'",
 	    zopim_language: "en",
-	    base_name: "/",
+	    base_name: "'.$baseName.'",
 	    show_social_login: {
 	        facebook: 1,
 	        google: 1,
