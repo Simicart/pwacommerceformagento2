@@ -37,6 +37,7 @@ class Save extends Action
                 $imageFile = $imageHelper->uploadImage('image_url', 'notification');
                 if ($imageFile) {
                     $model->setImageUrl($imageFile);
+                    $data['image_url'] = $imageFile;
                 }
             }
             if ($data['device_id'] && ($data['device_id']!= '')) {

@@ -112,6 +112,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
+            'image_url',
+            'image',
+            [
+                'name' => 'image_url',
+                'label' => __('Image'),
+                'title' => __('Image'),
+                'required' => false,
+            ]
+        );
+        $fieldset->addField(
             'notice_content',
             'textarea',
             [
