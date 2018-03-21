@@ -15,45 +15,29 @@ use \Magento\Directory\Model\ResourceModel\Country\CollectionFactory as CountryC
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    /**
-     * @var \Magento\Framework\App\Filesystem\DirectoryList;
-     */
     public $directionList;
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface;
-     */
     public $objectManager;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface as StoreManager;
-     */
     public $storeManager;
-
-    /**
-     * @var \Magento\Framework\HTTP\Adapter\FileTransferFactory
-     */
     public $httpFactory;
-
-    /**
-     * @var \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
-     */
     public $countryCollectionFactory;
-
-    /**
-     * Data constructor.
-     * @param Context $context
-     * @param ObjectManagerInterface $manager
-     * @param DirectoryList $directoryList
-     * @param StoreManager $storemanager
-     */
-    public function __construct(Context $context, ObjectManagerInterface $manager, DirectoryList $directoryList, StoreManager $storemanager, CountryCollectionFactory $countryCollectionFactory)
-    {
+    public $fileUploaderFactory;
+    public $filesystem;
+    
+    public function __construct(
+        Context $context, 
+        ObjectManagerInterface $manager, 
+        DirectoryList $directoryList, 
+        StoreManager $storemanager, 
+        CountryCollectionFactory $countryCollectionFactory
+    ) {
         $this->countryCollectionFactory = $countryCollectionFactory;
         $this->directionList = $directoryList;
         $this->objectManager = $manager;
         $this->storeManager = $storemanager;
         $this->httpFactory = $this->objectManager->create('\Magento\Framework\HTTP\Adapter\FileTransferFactory');
+        $this->fileUploaderFactory = $this->objectManager
+            ->create('\Magento\MediaStorage\Model\File\UploaderFactory');
+        $this->filesystem = $this->objectManager->create('\Magento\Framework\Filesystem');
         parent::__construct($context);
     }
 
@@ -215,22 +199,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function uploadImage($scope)
     {
         $adapter = $this->httpFactory->create();
-        /*
-         *
-         * Comment to avoid using direct new class initializing function
-         * Uncomment it if customer want to use image validation back (Size of image and file
-         * size)
-         *
-         *
-         *
-        $adapter->addValidator(new \Zend_Validate_File_ImageSize($this->imageSize));
-        $adapter->addValidator(
-            new \Zend_Validate_File_FilesSize(['max' => self::MAX_FILE_SIZE])
-        );
-         *
-         */
         if ($adapter->isUploaded($scope)) {
-            // validate image
             if (!$adapter->isValid($scope)) {
                 throw new \Simi\Simipwa\Helper\SimiException(__('Uploaded image is not valid.'));
             }
@@ -241,15 +210,20 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $uploader->setAllowCreateFolders(true);
             $ext = $uploader->getFileExtension();
             if ($uploader->save($this->getBaseDir(), $scope . time() . '.' . $ext)) {
-                return 'Simiconnector/' . $uploader->getUploadedFileName();
+                return 'Simipwa/' . $uploader->getUploadedFileName();
             }
         }
         return false;
     }
 
-    /**
-     * @return \Magento\Directory\Model\ResourceModel\Country\Collection
-     */
+    public function getBaseDir()
+    {
+        $path = $this->filesystem->getDirectoryRead(
+            DirectoryList::MEDIA
+        )->getAbsolutePath('Simipwa');
+        return $path;
+    }
+    
     public function getCountryCollection()
     {
         return $this->countryCollectionFactory->create();

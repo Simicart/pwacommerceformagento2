@@ -30,7 +30,7 @@ class Save extends Action
         )?$data['devices_pushed']:'';
         $model->addData($data);
         try {
-            $imageHelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
+            $imageHelper = $simiObjectManager->get('Simi\Simipwa\Helper\Data');
             if ($is_delete_siminotification && $model->getImageUrl()) {
                 $model->setImageUrl('');
             } else {
@@ -46,7 +46,7 @@ class Save extends Action
                 $data['notice_type'] = 1;
             }
 
-            if (!$data['type'] && $data['product_id']) {
+            if (!isset($data['type']) && $data['product_id']) {
                 $data['type'] = 1;
             }
             $model->setData($data)->setStatus(1);
@@ -97,7 +97,7 @@ class Save extends Action
         } catch (\RuntimeException $e) {
             $this->messageManager->addError($e->getMessage());
         } catch (\Exception $e) {
-            $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
+            $this->messageManager->addException($e, $e->getMessage());
         }
 
         $this->_getSession()->setFormData($data);

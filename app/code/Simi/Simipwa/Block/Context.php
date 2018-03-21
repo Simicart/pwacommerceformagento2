@@ -142,7 +142,7 @@ class Context extends \Magento\Framework\View\Element\Template\Context
     }
 
     /**
-     * Function for getting simiconnector model config object
+     * Function for getting model config object
      * @return \Simi\Simipwa\Model\Config
      */
     public function getConfig()

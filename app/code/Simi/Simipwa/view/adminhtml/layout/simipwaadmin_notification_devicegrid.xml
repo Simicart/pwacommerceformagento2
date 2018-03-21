@@ -2,6 +2,6 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="formkey"/>
     <container name="root" label="Root">
-        <block class="Simi\Simipwa\Block\Adminhtml\Notification\Edit\Tab\Devicegrid" name="admin.simiconnector.notification.edit.tab.devicegrid"/>
+        <block class="Simi\Simipwa\Block\Adminhtml\Notification\Edit\Tab\Devicegrid" name="admin.simipwa.notification.edit.tab.devicegrid"/>
     </container>
 </page>

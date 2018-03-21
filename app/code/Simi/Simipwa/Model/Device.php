@@ -8,7 +8,6 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Simi\Simipwa\Model\ResourceModel\Device as DeviceRM;
 use Simi\Simipwa\Model\ResourceModel\Device\Collection;
-use Simi\Simiconnector\Helper\Website;
 
 /**
  * Simipwa Model
@@ -24,6 +23,7 @@ class Device extends AbstractModel
      * */
     public $websiteHelper;
     public $simiObjectManager;
+    public $countryCollectionFactory;
 
     /**
      * /**
@@ -41,12 +41,12 @@ class Device extends AbstractModel
         Registry $registry,
         DeviceRM $resource,
         Collection $resourceCollection,
-        Website $websiteHelper
+        \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
     ) {
 
 
         $this->simiObjectManager = $simiObjectManager;
-        $this->websiteHelper = $websiteHelper;
+        $this->countryCollectionFactory = $countryCollectionFactory;
 
         parent::__construct(
             $context,
@@ -68,9 +68,9 @@ class Device extends AbstractModel
 
     public function toOptionCountryHash()
     {
-        $country_collection = $this->websiteHelper->getCountryCollection();
+        $country_collection = $this->countryCollectionFactory->create();
         $list = [];
-        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($country_collection) > 0) {
+        if (count($country_collection) > 0) {
             foreach ($country_collection as $country) {
                 $list[$country->getId()] = $country->getName();
             }

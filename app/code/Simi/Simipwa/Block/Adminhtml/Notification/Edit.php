@@ -119,8 +119,6 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     {
         $arrow_down_img = $this->getViewFileUrl('Simi_Simipwa::images/arrow_down.png');
         $arrow_up_img   = $this->getViewFileUrl('Simi_Simipwa::images/arrow_up.png');
-        $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
-        $arrow_up_img   = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
 
         $deviceJsUpdateFunction = '
                     /*

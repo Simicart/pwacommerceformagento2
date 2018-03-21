@@ -33,7 +33,7 @@ class Productgrid extends \Magento\Catalog\Controller\Adminhtml\Product
     {
         $this->productBuilder->build($this->getRequest());
         $resultLayout = $this->resultLayoutFactory->create();
-        $resultLayout->getLayout()->getBlock('simiconnector.siminotification.edit.tab.productgrid')
+        $resultLayout->getLayout()->getBlock('simipwa.siminotification.edit.tab.productgrid')
             ->setProducts($this->getRequest()->getPost('products', null));
         return $resultLayout;
     }
