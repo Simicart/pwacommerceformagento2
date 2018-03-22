@@ -36,6 +36,29 @@ class Build extends Action
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
             $url = $config['app-configs'][0]['url'];
+            
+            if ($config['app-configs'][0]['ios_link']) {
+                try {
+                    $iosId = explode('id', $config['app-configs'][0]['ios_link']);
+                    $iosId = $iosId[1];
+                    $iosId = substr($iosId, 0, 10);
+                }
+                catch (\Exception $getIosUrlException) {
+
+                }
+            }
+
+            if ($config['app-configs'][0]['android_link']) {
+                try {
+                    $androidId = explode('id=', $config['app-configs'][0]['android_link']);
+                    $androidId = $androidId[1];
+                    $androidId = explode('?', $androidId);
+                    $androidId = $androidId[0];
+                }
+                catch (\Exception $getAndroidUrlException) {  
+                
+                }
+            }
 
             //create directory
             $filePath = $this->_objectManager
@@ -94,6 +117,12 @@ class Build extends Action
             $file_contents = str_replace('PAGE_TITLE_HERE',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('IOS_SPLASH_TEXT',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('"PWA_EXCLUDED_PATHS"','"'.$excludedPaths.'"',$file_contents);
+            if(isset($iosId) && $iosId && $iosId!==''){
+                $file_contents = str_replace('IOS_APP_ID',$iosId,$file_contents);
+            }
+            if(isset($androidId) && $androidId && $androidId!==''){
+                $file_contents = str_replace('GOOGLE_APP_ID',$androidId,$file_contents);
+            }
             file_put_contents($path_to_file,$file_contents);
 
             //update config.js file
@@ -154,6 +183,33 @@ class Build extends Action
 	    loading_color: '".$theme['loading_color']."',
 	};
 			";
+            if (isset($androidId) || isset($iosId)) {
+                if (!isset($androidId))
+                    $androidId = '';
+                if (!isset($iosId))
+                    $iosId = '';
+                $msConfigs.=
+                    "
+    var SMART_BANNER_CONFIGS = {
+        ios_app_id: '".$iosId."',
+        android_app_id: '".$androidId."',
+        app_store_language: '', 
+        title: '".$config['app-configs'][0]['app_name']."',
+        author: '".$config['app-configs'][0]['app_name']."',
+        button_text: 'View',
+        store: {
+            ios: 'On the App Store',
+            android: 'In Google Play',
+            windows: 'In Windows store'
+        },
+        price: {
+            ios: 'FREE',
+            android: 'FREE',
+            windows: 'FREE'
+        },
+    }; 
+        ";
+            }
                     break;
                 }
             }
