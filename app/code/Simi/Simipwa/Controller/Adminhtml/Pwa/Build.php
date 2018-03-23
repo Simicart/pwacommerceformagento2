@@ -35,6 +35,7 @@ class Build extends Action
             $buildFile = 'https://dashboard.simicart.com/pwa/package.zip';
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
+            $buildTime = date("Y-m-d h:i:sa");
             $url = $config['app-configs'][0]['url'];
             
             if ($config['app-configs'][0]['ios_link']) {
@@ -117,6 +118,7 @@ class Build extends Action
             $file_contents = str_replace('PAGE_TITLE_HERE',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('IOS_SPLASH_TEXT',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('"PWA_EXCLUDED_PATHS"','"'.$excludedPaths.'"',$file_contents);
+            $file_contents = str_replace('"PWA_BUILD_TIME_VALUE"',$buildTime,$file_contents);
             if(isset($iosId) && $iosId && $iosId!==''){
                 $file_contents = str_replace('IOS_APP_ID',$iosId,$file_contents);
             }
@@ -132,6 +134,9 @@ class Build extends Action
             $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
             $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_enabled')?'/':'pwa';
             $msConfigs = '
+    var PWA_BUILD_TIME = "'.$buildTime.'";
+    if (PWA_INDEX_BUILD_TIME && PWA_INDEX_BUILD_TIME!=="PWA_BUILD_TIME_VALUE" && PWA_BUILD_TIME !== PWA_INDEX_BUILD_TIME)
+        use_pwa = false;
 	var SMCONFIGS = {
 	    merchant_url: "'.$url.'",
 	    api_path: "simiconnector/rest/v2/",
@@ -183,6 +188,9 @@ class Build extends Action
 	    loading_color: '".$theme['loading_color']."',
 	};
 			";
+                    break;
+                }
+            }
             if (isset($androidId) || isset($iosId)) {
                 if (!isset($androidId))
                     $androidId = '';
@@ -210,10 +218,7 @@ class Build extends Action
     }; 
         ";
             }
-                    break;
-                }
-            }
-
+            
             $path_to_file = './pwa/js/config/config.js';
             file_put_contents($path_to_file, $msConfigs);
 
