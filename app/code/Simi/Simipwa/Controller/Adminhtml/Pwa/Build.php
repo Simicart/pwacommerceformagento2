@@ -118,7 +118,7 @@ class Build extends Action
             $file_contents = str_replace('PAGE_TITLE_HERE',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('IOS_SPLASH_TEXT',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('"PWA_EXCLUDED_PATHS"','"'.$excludedPaths.'"',$file_contents);
-            $file_contents = str_replace('"PWA_BUILD_TIME_VALUE"',$buildTime,$file_contents);
+            $file_contents = str_replace('PWA_BUILD_TIME_VALUE',$buildTime,$file_contents);
             if(isset($iosId) && $iosId && $iosId!==''){
                 $file_contents = str_replace('IOS_APP_ID',$iosId,$file_contents);
             }
@@ -126,6 +126,34 @@ class Build extends Action
                 $file_contents = str_replace('GOOGLE_APP_ID',$androidId,$file_contents);
             }
             file_put_contents($path_to_file,$file_contents);
+
+
+            //update version.js file
+            $versionContent = '
+
+    var PWA_BUILD_TIME = "'.$buildTime.'";
+    if ((typeof(PWA_INDEX_BUILD_TIME) !== "undefined") && 
+        PWA_INDEX_BUILD_TIME!=="PWA_BUILD_TIME_VALUE" && 
+        PWA_BUILD_TIME !== PWA_INDEX_BUILD_TIME) {
+        use_pwa = false;
+    }
+    if (!use_pwa) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+         for(let registration of registrations) {
+          registration.unregister()
+        } });
+        caches.keys().then(function(names) {
+            for (let name of names)
+                caches.delete(name);
+        });
+        window.location.reload();
+    }
+
+            ';
+
+            
+            $path_to_file = './pwa/js/config/version.js';
+            file_put_contents($path_to_file, $versionContent);
 
             //update config.js file
 
@@ -135,8 +163,6 @@ class Build extends Action
             $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_enabled')?'/':'pwa';
             $msConfigs = '
     var PWA_BUILD_TIME = "'.$buildTime.'";
-    if (PWA_INDEX_BUILD_TIME && PWA_INDEX_BUILD_TIME!=="PWA_BUILD_TIME_VALUE" && PWA_BUILD_TIME !== PWA_INDEX_BUILD_TIME)
-        use_pwa = false;
 	var SMCONFIGS = {
 	    merchant_url: "'.$url.'",
 	    api_path: "simiconnector/rest/v2/",
