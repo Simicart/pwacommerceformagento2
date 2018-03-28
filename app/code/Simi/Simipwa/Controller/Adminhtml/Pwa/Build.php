@@ -35,7 +35,7 @@ class Build extends Action
             $buildFile = 'https://dashboard.simicart.com/pwa/package.zip';
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
-            $buildTime = date("Y-m-d h:i:sa");
+            $buildTime = time();
             $url = $config['app-configs'][0]['url'];
             
             if ($config['app-configs'][0]['ios_link']) {
@@ -175,7 +175,7 @@ class Build extends Action
             $mixPanelToken = $scopeConfigInterface->getValue('simiconnector/mixpanel/token');
             $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
             $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
-            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_enabled')?'/':'pwa';
+            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_enable')?'/':'pwa';
             $msConfigs = '
     var PWA_BUILD_TIME = "'.$buildTime.'";
 	var SMCONFIGS = {
@@ -263,7 +263,7 @@ class Build extends Action
             $path_to_file = './pwa/js/config/config.js';
             file_put_contents($path_to_file, $msConfigs);
 
-            $this->messageManager->addSuccess(__('PWA Application was Built Successfully. To review it, please go to '.$url.'pwa/'));
+            $this->messageManager->addSuccess(__('PWA Application was Built Successfully. To review it, please go to '.$url.$baseName));
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
         }
