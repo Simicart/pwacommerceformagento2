@@ -131,12 +131,28 @@ class Build extends Action
             //update version.js file
             $versionContent = '
 
-    var PWA_BUILD_TIME = "'.$buildTime.'";
-    if ((typeof(PWA_INDEX_BUILD_TIME) !== "undefined") && 
-        PWA_INDEX_BUILD_TIME!=="PWA_BUILD_TIME_VALUE" && 
-        PWA_BUILD_TIME !== PWA_INDEX_BUILD_TIME) {
-        use_pwa = false;
+    var PWA_BUILD_TIME = '.$buildTime.';
+    var PWA_LOCAL_BUILD_TIME = localStorage.getItem("pwa_build_time");
+    if(!PWA_LOCAL_BUILD_TIME || PWA_LOCAL_BUILD_TIME === null){
+        localStorage.setItem(\'pwa_build_time\',PWA_BUILD_TIME);
+        PWA_LOCAL_BUILD_TIME = PWA_BUILD_TIME;
+    }else{
+        PWA_LOCAL_BUILD_TIME = parseInt(PWA_LOCAL_BUILD_TIME,10);
+        if(PWA_BUILD_TIME > PWA_LOCAL_BUILD_TIME){
+            localStorage.setItem(\'pwa_build_time\',PWA_BUILD_TIME);
+            PWA_LOCAL_BUILD_TIME = PWA_BUILD_TIME;
+        }
     }
+    var INDEX_LOCAL_BUILD_TIME = parseInt(localStorage.getItem("index_build_time"),10);
+    if(PWA_LOCAL_BUILD_TIME !== INDEX_LOCAL_BUILD_TIME){
+        use_pwa = false;
+        if(PWA_LOCAL_BUILD_TIME > INDEX_LOCAL_BUILD_TIME){
+            localStorage.setItem("index_build_time",PWA_LOCAL_BUILD_TIME);
+        }else{
+            localStorage.setItem("pwa_build_time",INDEX_LOCAL_BUILD_TIME);
+        }
+    }
+    console.log(use_pwa);
     if (!use_pwa) {
         navigator.serviceWorker.getRegistrations().then(function(registrations) {
          for(let registration of registrations) {
@@ -148,7 +164,6 @@ class Build extends Action
         });
         window.location.reload();
     }
-
             ';
 
             

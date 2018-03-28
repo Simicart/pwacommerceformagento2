@@ -16,18 +16,19 @@ class SyncButton extends Field
     
     public function getButtonHtml()
     {
-        $button = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Button'
-        )->setData(
-            [
-                'id' => 'clear_mobile_cache',
-                'label' => __('Sync Sitemaps'),
-                'onclick' => 'setLocation(\'' . $this->getUrl('simipwaadmin/cache/delete') . '\')',
-            ]
-        );
-        $actionHtml =  $button->toHtml();
-        
+        $actionHtml = '';
         if (class_exists('Simi\Simiconnector\Controller\Rest\V2')) {
+            $button = $this->getLayout()->createBlock(
+                'Magento\Backend\Block\Widget\Button'
+            )->setData(
+                [
+                    'id' => 'clear_mobile_cache',
+                    'label' => __('Sync Sitemaps'),
+                    'onclick' => 'setLocation(\'' . $this->getUrl('simipwaadmin/cache/delete') . '\')',
+                ]
+            );
+            $actionHtml .=  $button->toHtml();
+        
             $buildButton = $this->getLayout()->createBlock(
                 'Magento\Backend\Block\Widget\Button'
             )->setData(
@@ -39,8 +40,10 @@ class SyncButton extends Field
             );
             $actionHtml .= $buildButton->toHtml();
         } else
-            $actionHtml.= '<p>Visit https://www.simicart.com/pwa.html '.
-            'to get details and build Advanced Progressive Web App</p>';
+            $actionHtml.= '
+            <script type="text/javascript">
+                document.getElementById("simipwa_general-link").parentElement.parentElement.style.display = "none";
+            </script>';
         
         return $actionHtml;
     }
