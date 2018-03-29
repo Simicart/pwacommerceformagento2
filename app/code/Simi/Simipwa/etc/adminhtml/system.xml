@@ -101,6 +101,12 @@
                     <frontend_model>Simi\Simipwa\Block\System\Config\Form\SyncButton</frontend_model>
                 </field>
             </group>
+            <group id="analytics" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Analytics Configuration</label>
+                <field id="ga_token_key" translate="label" type="text" sortOrder="499" showInDefault="1">
+                    <label>Google Analytics Token Key</label>
+                </field>
+            </group>
         </section>
     </system>
 </config>

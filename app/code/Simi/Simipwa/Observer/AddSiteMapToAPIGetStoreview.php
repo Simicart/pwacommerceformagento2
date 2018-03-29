@@ -49,6 +49,10 @@ class AddSiteMapToAPIGetStoreview implements ObserverInterface
                 'pwa_url'=> $scopeConfigInterface->getValue('simipwa/general/pwa_url'),
                 'pwa_excluded_paths'=> $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths'),
             );
+            $GATokenKey = $scopeConfigInterface->getValue('simipwa/analytics/ga_token_key');
+            if($GATokenKey){
+                $info['ga_token_key'] = $GATokenKey;
+            }
             $obj->storeviewInfo = $info;
         }
     }
