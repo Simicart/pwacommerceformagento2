@@ -46,3 +46,14 @@
         }
     </script>
 <?php endif ?>
+<?php if ($block->IsEnableAddToHomescreen()): ?>
+    <script type="text/javascript">
+        if(!document.getElementById('simi-homescreen-manifest')) {
+            var link = document.createElement('link');
+            link.id = 'simi-homescreen-manifest';
+            link.rel = 'manifest';
+            link.href = '/manifest.json';
+            document.head.appendChild(link);
+        }
+    </script>
+<?php endif ?>
