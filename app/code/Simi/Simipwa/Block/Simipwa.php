@@ -33,7 +33,7 @@ class Simipwa extends \Magento\Framework\View\Element\Template
 	}
 
     public function IsEnableAddToHomescreen(){
-        return $this->getConfigValue('simipwa/homescreen/enable');
+        return $this->getConfigValue('simipwa/homescreen/homescreen_enable');
     }
 
 }

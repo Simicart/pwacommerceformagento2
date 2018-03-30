@@ -125,6 +125,8 @@ class Build extends Action
             if(isset($androidId) && $androidId && $androidId!==''){
                 $file_contents = str_replace('GOOGLE_APP_ID',$androidId,$file_contents);
             }
+            $iconUrl = $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon');
+            $file_contents = str_replace('/pwa/images/default_icon_512_512.png',$iconUrl,$file_contents);
             file_put_contents($path_to_file,$file_contents);
 
 
