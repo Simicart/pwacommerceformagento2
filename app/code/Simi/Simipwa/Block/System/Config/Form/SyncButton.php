@@ -42,7 +42,10 @@ class SyncButton extends Field
         } else
             $actionHtml.= '
             <script type="text/javascript">
-                document.getElementById("simipwa_general-link").parentElement.parentElement.style.display = "none";
+                document.addEventListener("DOMContentLoaded", function(event) {
+                    document.getElementById("simipwa_general-link").parentElement.parentElement.style.display = "none";
+                    document.getElementById("simipwa_analytics-link").parentElement.parentElement.style.display = "none";
+                });
             </script>';
         
         return $actionHtml;
