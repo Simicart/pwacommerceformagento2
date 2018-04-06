@@ -31,8 +31,7 @@ class Build extends Action
             if (!$config || (!$config = json_decode($config, 1)))
                 throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
-
-            $buildFile = 'https://dashboard.simicart.com/pwa/package.zip';
+            $buildFile = 'https://dashboard.simicart.com/pwa/package.php?app_id='.$config['app-configs'][0]['app_info_id'];
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
             $buildTime = time();
