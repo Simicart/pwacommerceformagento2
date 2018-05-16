@@ -37,17 +37,14 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         $this->simiObjectManager
             ->get('\Magento\Framework\Registry')
             ->register('simipwa_checked_redirecting_once', true);
-        
         $scopeConfigInterface = $this->simiObjectManager
-                ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $urlInterface = $this->simiObjectManager->get('\Magento\Framework\UrlInterface');
         $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_enable');
-
-        $pwa_url = $scopeConfigInterface->getValue('simipwa/general/pwa_url');
-        if (!$enable || !$pwa_url ||($pwa_url == ''))
+        if (!$enable)
             return;
-        
+
         $tablet_browser = 0;
         $mobile_browser = 0;
 
@@ -63,7 +60,6 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') !== false) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE'])))) {
                 $mobile_browser++;
             }
-
         $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
         $mobile_agents = array(
             'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
@@ -98,14 +94,14 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         if (strpos($currentUrl, $baseUrl) !== false) {
             $uri = '/'.str_replace($baseUrl, '', $currentUrl);
         }
-        
+
         $excludedUrls = array('admin', 'simiconnector', 'simicustompayment', 'payfort', 'simipwa', 'rest/v2');
-        
+
         $excludedPaths = str_replace(' ', '', $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths'));
         $excludedPaths = explode(',', $excludedPaths);
-        
+
         $excludedUrls = array_merge($excludedUrls, $excludedPaths);
-        
+
         $isExcludedCase = false;
 
         foreach ($excludedUrls as $key => $excludedUrl) {
@@ -113,17 +109,13 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $isExcludedCase = true;
             }
         }
-        
         if((($tablet_browser > 0)||($mobile_browser > 0)) && !$isExcludedCase){
             if (($pwaContent = @file_get_contents('./pwa/index.html')) &&
-                ($response = $observer->getResponse())    
+                ($response = $observer->getResponse())
             ) {
-               $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
-               $response->setBody($pwaContent);
+                $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
+                $response->setBody($pwaContent);
             }
-        } else if (!$isExcludedCase) {
-            $url = $pwa_url.$uri;
-            header("Location: ".$url);
         }
     }
 }
