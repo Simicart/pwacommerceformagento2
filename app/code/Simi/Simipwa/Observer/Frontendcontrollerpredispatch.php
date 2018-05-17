@@ -115,7 +115,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             ) {
 
                 if ($prerenderedHeader = $this->prerenderHeader()) {
-                    $pwaContent = str_replace('<!--PHP-->', $prerenderedHeader, $pwaContent);
+                    $pwaContent = str_replace('<head>', '<head>'.$prerenderedHeader, $pwaContent);
                 }
                 $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
                 $response->setBody($pwaContent);
