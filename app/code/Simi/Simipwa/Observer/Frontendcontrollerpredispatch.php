@@ -113,9 +113,80 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             if (($pwaContent = @file_get_contents('./pwa/index.html')) &&
                 ($response = $observer->getResponse())
             ) {
+
+                if ($prerenderedHeader = $this->prerenderHeader()) {
+                    $pwaContent = str_replace('<!--PHP-->', $prerenderedHeader, $pwaContent);
+                }
                 $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
                 $response->setBody($pwaContent);
             }
         }
     }
+
+    public function prerenderHeader() {
+        try {
+            $objectManager = $this->simiObjectManager;
+            $preloadData = [];
+            $uri = $_SERVER['REQUEST_URI'];
+
+            $uriparts = explode("pwa/", $uri);
+            if ($uriparts && isset($uriparts[1]))
+                $uri = $uriparts[1];
+            $uriparts = explode("?", $uri);
+            if ($uriparts && isset($uriparts[1]))
+                $uri = $uriparts[0];
+            $store = $objectManager->get('\Magento\Store\Model\StoreManagerInterface')->getStore();
+            $storeId = $store->getId();
+            $finder = $objectManager->get('Magento\UrlRewrite\Model\UrlFinderInterface');
+            $match = $finder->findOneByData([
+                'request_path' => ltrim($uri, '/'),
+                'store_id' => $storeId,
+            ]);
+            if ($match && $match->getEntityType()) {
+                if ($match->getEntityType() == 'product') {
+                    $product = $objectManager->get('Magento\Catalog\Model\Product')->load($match->getEntityId());
+                    if ($product->getId()) {
+                        $preloadData['meta_title'] = $product->getMetaTitle()?$product->getMetaTitle():$product->getName();
+                        $preloadData['meta_description'] = $product->getMetaDescription()?$product->getMetaDescription():substr($product->getDescription(), 0, 255);
+                    }
+                } else if ($match->getEntityType() == 'category') {
+                    $category = $objectManager->get('Magento\Catalog\Model\Category')->load($match->getEntityId());
+                    if ($category->getId()) {
+                        $collection = $category->getResourceCollection();
+                        $pathIds = array_reverse($category->getPathIds());
+                        $collection->addAttributeToSelect('name');
+                        $collection->addAttributeToFilter('entity_id', array('in' => $pathIds));
+
+                        $group = $objectManager->get('\Magento\Store\Model\Group')->load($store->getGroupId());
+                        $catNamearray = [];
+                        foreach ($collection as $cat) {
+                            $catNamearray[$cat->getId()] = $cat->getName();
+                        }
+                        $metaTitle = [];
+                        foreach ($pathIds as $index=>$path) {
+                            if ($path == $group->getData('root_category_id'))
+                                break;
+                            $metaTitle[] = $catNamearray[$path];
+                        }
+                        $metaTitle = implode(' - ', $metaTitle);
+                        $preloadData['meta_title'] = $metaTitle?$metaTitle:$category->getName();
+                        $preloadData['meta_description'] = $preloadData['meta_title'];
+                    }
+                }
+            }
+        }catch (\Exception $e) {
+
+        }
+
+        $headerString = '';
+        if (isset($preloadData['meta_title'])) {
+            $headerString .= '<title>'.$preloadData['meta_title'].'</title>';
+        }
+
+        if (isset($preloadData['meta_description'])){
+            $headerString .= '<meta name="description" content="'.$preloadData['meta_description'].'"/>';
+        }
+        return $headerString;
+    }
+
 }
