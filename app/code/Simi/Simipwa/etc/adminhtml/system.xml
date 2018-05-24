@@ -66,11 +66,19 @@
             <group id="general" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Advanced PWA Configuration</label>
                 <field id="pwa_enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable PWA</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Contact support@simicart.com for PWA building</comment>
+                </field>
+                <field id="pwa_main_url_site" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Redirection</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Enable PWA for your mobile users</comment>
+                    <comment>Redirect mobile users to your PWA. (Please click Build PWA after Save)</comment>
+                    <depends>
+                        <field id="*/*/pwa_enable">1</field>
+                    </depends>
                 </field>
-                <field id="pwa_redirect_ips" translate="label" type="text" sortOrder="149" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="pwa_redirect_ips" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PWA Redirect IP(s)</label>
                     <comment>Separated by comma, Users with IP listed above would be redirected. Leave this empty to redirect ALL users</comment>
                     <depends>

@@ -176,7 +176,7 @@ class Build extends Action
             $mixPanelToken = $scopeConfigInterface->getValue('simiconnector/mixpanel/token');
             $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
             $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
-            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_enable')?'/':'pwa';
+            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?'/':'pwa';
             $msConfigs = '
     var PWA_BUILD_TIME = "'.$buildTime.'";
 	var SMCONFIGS = {

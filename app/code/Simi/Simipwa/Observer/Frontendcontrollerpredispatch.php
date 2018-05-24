@@ -39,11 +39,17 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             ->register('simipwa_checked_redirecting_once', true);
         $scopeConfigInterface = $this->simiObjectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        $urlInterface = $this->simiObjectManager->get('\Magento\Framework\UrlInterface');
+
         $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_enable');
         if (!$enable)
             return;
+        $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site');
+        if (!$enable)
+            return;
+
+        $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $urlInterface = $this->simiObjectManager->get('\Magento\Framework\UrlInterface');
+        
         $redirectIps = $scopeConfigInterface->getValue('simipwa/general/pwa_redirect_ips');
         if ($redirectIps && $redirectIps!='' &&
             !in_array($_SERVER['REMOTE_ADDR'], explode(',', $redirectIps), true))
