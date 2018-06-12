@@ -30,12 +30,16 @@ class Config extends \Magento\Framework\App\Action\Action
     {
         $scopeConfigInterface = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $enable = (!$scopeConfigInterface->getValue('simipwa/general/pwa_enable'))?0:1;
+        $build_time = $scopeConfigInterface->getValue('simipwa/general/build_time')?
+            $scopeConfigInterface->getValue('simipwa/general/build_time') : 0;
+
         $result = array(
             'pwa' => array(
                 //notification and offline
                 'enable_noti' => (int)$scopeConfigInterface->getValue('simipwa/notification/enable'),
                 //simicart advanced pwa
-                'enable' => $enable
+                'enable' => $enable,
+                'build_time' => (int)$build_time
             )
         );
 

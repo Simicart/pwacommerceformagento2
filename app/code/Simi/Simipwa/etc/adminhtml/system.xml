@@ -127,6 +127,10 @@
                     <label>Custom Footer HTML</label>
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
                 </field>
+
+                <field id="build_time" readonly="1" translate="label" type="text" sortOrder="9999" showInDefault="1">
+                    <label>Build Time</label>
+                </field>
             </group>
         </section>
     </system>

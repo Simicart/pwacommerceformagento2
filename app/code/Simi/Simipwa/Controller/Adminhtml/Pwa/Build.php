@@ -35,7 +35,6 @@ class Build extends Action
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
             $buildTime = time();
-            $url = $config['app-configs'][0]['url'];
             
             if ($config['app-configs'][0]['ios_link']) {
                 try {
@@ -128,143 +127,9 @@ class Build extends Action
             $file_contents = str_replace('/pwa/images/default_icon_512_512.png',$iconUrl,$file_contents);
             file_put_contents($path_to_file,$file_contents);
 
-
-            //update version.js file
-            $versionContent = '
-
-    var PWA_BUILD_TIME = '.$buildTime.';
-    var PWA_LOCAL_BUILD_TIME = localStorage.getItem("pwa_build_time");
-    if(!PWA_LOCAL_BUILD_TIME || PWA_LOCAL_BUILD_TIME === null){
-        localStorage.setItem(\'pwa_build_time\',PWA_BUILD_TIME);
-        PWA_LOCAL_BUILD_TIME = PWA_BUILD_TIME;
-    }else{
-        PWA_LOCAL_BUILD_TIME = parseInt(PWA_LOCAL_BUILD_TIME,10);
-        if(PWA_BUILD_TIME > PWA_LOCAL_BUILD_TIME){
-            localStorage.setItem(\'pwa_build_time\',PWA_BUILD_TIME);
-            PWA_LOCAL_BUILD_TIME = PWA_BUILD_TIME;
-        }
-    }
-    var INDEX_LOCAL_BUILD_TIME = parseInt(localStorage.getItem("index_build_time"),10);
-    if(PWA_LOCAL_BUILD_TIME !== INDEX_LOCAL_BUILD_TIME){
-        use_pwa = false;
-        if(PWA_LOCAL_BUILD_TIME > INDEX_LOCAL_BUILD_TIME){
-            localStorage.setItem("index_build_time",PWA_LOCAL_BUILD_TIME);
-        }else{
-            localStorage.setItem("pwa_build_time",INDEX_LOCAL_BUILD_TIME);
-        }
-    }
-    console.log(use_pwa);
-    if (!use_pwa) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-         for(let registration of registrations) {
-          registration.unregister()
-        } });
-        caches.keys().then(function(names) {
-            for (let name of names)
-                caches.delete(name);
-        });
-        window.location.reload();
-    }
-            ';
-
-            
-            $path_to_file = './pwa/js/config/version.js';
-            file_put_contents($path_to_file, $versionContent);
-
             //update config.js file
-
-            $mixPanelToken = $scopeConfigInterface->getValue('simiconnector/mixpanel/token');
-            $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
-            $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
-            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?'/':'pwa';
-            $msConfigs = '
-    var PWA_BUILD_TIME = "'.$buildTime.'";
-	var SMCONFIGS = {
-	    merchant_url: "'.$url.'",
-	    api_path: "simiconnector/rest/v2/",
-	    merchant_authorization: "'.$secret_key.'",
-	    simicart_url: "https://www.simicart.com/appdashboard/rest/app_configs/",
-	    simicart_authorization: "'.$token.'",
-	    notification_api: "simipwa/index/",
-	    zopim_key: "'.$zopimKey.'",
-	    zopim_language: "en",
-	    base_name: "'.$baseName.'",
-	    show_social_login: {
-	        facebook: 1,
-	        google: 1,
-	        twitter: 1
-	    },
-
-	    mixpanel: {
-	        token_key: "'.$mixPanelToken.'"
-	    },
-	    logo_url: "'.$app_image_logo.'"
-	};
-	';
-
-            foreach ($config['app-configs'] as $index=>$appconfig) {
-                if ($appconfig['theme']) {
-                    $theme = $appconfig['theme'];
-                    $msConfigs.= "
-	var DEFAULT_COLORS = {
-	    key_color: '".$theme['key_color']."',
-	    top_menu_icon_color: '".$theme['top_menu_icon_color']."',
-	    button_background: '".$theme['button_background']."',
-	    button_text_color: '".$theme['button_text_color']."',
-	    menu_background: '".$theme['menu_background']."',
-	    menu_text_color: '".$theme['menu_text_color']."',
-	    menu_line_color: '".$theme['menu_line_color']."',
-	    menu_icon_color: '".$theme['menu_icon_color']."',
-	    search_box_background: '".$theme['search_box_background']."',
-	    search_text_color: '".$theme['search_text_color']."',
-	    app_background: '".$theme['app_background']."',
-	    content_color: '".$theme['content_color']."',
-	    image_border_color: '".$theme['image_border_color']."',
-	    line_color: '".$theme['line_color']."',
-	    price_color: '".$theme['price_color']."',
-	    special_price_color: '".$theme['special_price_color']."',
-	    icon_color: '".$theme['icon_color']."',
-	    section_color: '".$theme['section_color']."',
-	    status_bar_background: '".$theme['status_bar_background']."',
-	    status_bar_text: '".$theme['status_bar_text']."',
-	    loading_color: '".$theme['loading_color']."',
-	};
-			";
-                    break;
-                }
-            }
-            if (isset($androidId) || isset($iosId)) {
-                if (!isset($androidId))
-                    $androidId = '';
-                if (!isset($iosId))
-                    $iosId = '';
-                $msConfigs.=
-                    "
-    var SMART_BANNER_CONFIGS = {
-        ios_app_id: '".$iosId."',
-        android_app_id: '".$androidId."',
-        app_store_language: '', 
-        title: '".$config['app-configs'][0]['app_name']."',
-        author: '".$config['app-configs'][0]['app_name']."',
-        button_text: 'View',
-        store: {
-            ios: 'On the App Store',
-            android: 'In Google Play',
-            windows: 'In Windows store'
-        },
-        price: {
-            ios: 'FREE',
-            android: 'FREE',
-            windows: 'FREE'
-        },
-    }; 
-        ";
-            }
-            
-            $path_to_file = './pwa/js/config/config.js';
-            file_put_contents($path_to_file, $msConfigs);
-
-            $this->messageManager->addSuccess(__('PWA Application was Built Successfully. To review it, please go to '.$url.$baseName));
+            $this->_objectManager->get('Simi\Simipwa\Helper\Data')->updateConfigJsFile($config);
+            $this->messageManager->addSuccess(__('PWA Application was Built Successfully.'));
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
         }
