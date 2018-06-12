@@ -27,7 +27,7 @@ class Build extends Action
             if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
                 throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
 
-            $config = file_get_contents("https://www.simicart.com/appdashboard/rest/app_configs/bear_token/".$token);
+            $config = file_get_contents("https://www.simicart.com/appdashboard/rest/app_configs/bear_token/".$token.'/pwa/1');
             if (!$config || (!$config = json_decode($config, 1)))
                 throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
@@ -98,15 +98,29 @@ class Build extends Action
             $path_to_file = './pwa/service-worker.js';
             file_put_contents('./service-worker.js',file_get_contents($path_to_file));
 
-            //move favicon into pwa
-            try {
-                $path_to_file = './favicon.ico';
-                if ($favicon_content = file_get_contents($path_to_file))
-                    file_put_contents('./pwa/favicon.ico',$favicon_content);
-            } catch (\Exception $faviconException) {
+            // app image
+            $app_images = $config['app-configs'][0]['app_images'];
+            $app_splash_img_url = $scopeConfigInterface->getValue('simipwa/general/splash_img') ;
+            if(!$app_splash_img_url){
+                $app_splash_img_url = $app_images['splash_screen'];
+            }
+            if (file_get_contents($app_splash_img_url)) {
+                file_put_contents('./pwa/splash_screen_img.png',file_get_contents($app_splash_img_url));
+                $app_splash_img_url = './splash_screen_img.png';
+            }
+            $app_splash_img = 
+                '<img src="'.$app_splash_img_url.'" alt="Splash Screen" style="width: 325px;height: auto">';
 
+            $app_icon = $scopeConfigInterface->getValue('simipwa/manifest/logo');
+            if(!$app_icon){
+                $app_icon = $app_images['icon'];
             }
 
+            if (file_get_contents($app_icon)) {
+                file_put_contents('./pwa/app_icon.png',file_get_contents($app_icon));
+                $app_icon = './app_icon.png';
+            }
+            
             //update index.html file 
             $path_to_file = './pwa/index.html';
             $excludedPaths = $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths');
@@ -117,6 +131,27 @@ class Build extends Action
             $file_contents = str_replace('IOS_SPLASH_TEXT',$config['app-configs'][0]['app_name'],$file_contents);
             $file_contents = str_replace('"PWA_EXCLUDED_PATHS"','"'.$excludedPaths.'"',$file_contents);
             $file_contents = str_replace('PWA_BUILD_TIME_VALUE',$buildTime,$file_contents);
+            $file_contents = str_replace('<div id="splash-img"></div>', $app_splash_img, $file_contents);
+            if ($head = $scopeConfigInterface->getValue('simipwa/general/custom_head')) {
+                $file_contents = str_replace('<head>', '<head>'.$head, $file_contents);
+            }
+
+            if ($footerHtml = $scopeConfigInterface->getValue('simipwa/general/footer_html')) {
+                $footerHtml = $this->_objectManager
+                    ->get('Magento\Cms\Model\Template\FilterProvider')
+                    ->getPageFilter()->filter($footerHtml);
+                $file_contents = str_replace('</body>', $footerHtml.'</body>', $file_contents);
+            }
+            $file_contents = str_replace('/pwa/favicon.ico', $app_icon, $file_contents);
+            
+            if(isset($iosId) && $iosId && $iosId!==''){
+                $file_contents = str_replace('IOS_APP_ID', $iosId, $file_contents);
+            }
+
+            if(isset($androidId) && $androidId && $androidId!==''){
+                $file_contents = str_replace('GOOGLE_APP_ID', $androidId, $file_contents);
+            }
+            
             if(isset($iosId) && $iosId && $iosId!==''){
                 $file_contents = str_replace('IOS_APP_ID',$iosId,$file_contents);
             }

@@ -126,16 +126,6 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 if ($prerenderedHeader = $this->prerenderHeader()) {
                     $pwaContent = str_replace('<head>', '<head>'.$prerenderedHeader, $pwaContent);
                 }
-                if ($head = $scopeConfigInterface->getValue('simipwa/general/custom_head')) {
-                    $pwaContent = str_replace('<head>', '<head>'.$head, $pwaContent);
-                }
-                
-                if ($footerHtml = $scopeConfigInterface->getValue('simipwa/general/footer_html')) {
-                    $footerHtml = $this->simiObjectManager
-                        ->get('Magento\Cms\Model\Template\FilterProvider')
-                        ->getPageFilter()->filter($footerHtml);
-                    $pwaContent = str_replace('</body>', $footerHtml.'</body>', $pwaContent);
-                }
                 $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
                 $response->setBody($pwaContent);
             }

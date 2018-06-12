@@ -234,11 +234,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $token =  $scopeConfigInterface->getValue('simiconnector/general/token_key');
         $secret_key =  $scopeConfigInterface->getValue('simiconnector/general/secret_key');
-        $logoUrlSetting = $scopeConfigInterface->getValue('simipwa/general/logo_url');
-        $app_image_logo = ($logoUrlSetting && $logoUrlSetting!='')?
-            $logoUrlSetting:
-            $this->objectManager->get('\Magento\Theme\Block\Html\Header\Logo')->getLogoSrc();
-
+        
         if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
             throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
         
@@ -249,6 +245,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
         $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
         $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?'/':'pwa';
+
+        // app image
+        $app_images = $config['app-configs'][0]['app_images'];
+        $app_image_logo = $scopeConfigInterface->getValue('simipwa/general/logo_homepage');
+        if(!$app_image_logo){
+            $app_image_logo = $app_images['logo'];
+        }
+        
+        $app_splash_img_url = $scopeConfigInterface->getValue('simipwa/general/splash_img') ;
+        if(!$app_splash_img_url){
+            $app_splash_img_url = $app_images['splash_screen'];
+        }
         
         $msConfigs = '
     var PWA_CONFIG_BUILD_TIME = '.$buildTime.';
@@ -271,7 +279,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	    mixpanel: {
 	        token_key: "'.$mixPanelToken.'"
 	    },
-	    logo_url: "'.$app_image_logo.'"
+        logo_url: "'.$app_image_logo.'",
+        splash_screen : "'.$app_splash_img_url.'"
 	};
 	';
 
