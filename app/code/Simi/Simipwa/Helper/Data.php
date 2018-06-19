@@ -240,6 +240,28 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         
         $buildTime = time();
         $url = $config['app-configs'][0]['url'];
+        if ($config['app-configs'][0]['ios_link']) {
+            try {
+                $iosId = explode('id', $config['app-configs'][0]['ios_link']);
+                $iosId = $iosId[1];
+                $iosId = substr($iosId, 0, 10);
+            }
+            catch (\Exception $getIosUrlException) {
+
+            }
+        }
+
+        if ($config['app-configs'][0]['android_link']) {
+            try {
+                $androidId = explode('id=', $config['app-configs'][0]['android_link']);
+                $androidId = $androidId[1];
+                $androidId = explode('?', $androidId);
+                $androidId = $androidId[0];
+            }
+            catch (\Exception $getAndroidUrlException) {  
+            
+            }
+        }
 
         $mixPanelToken = $scopeConfigInterface->getValue('simiconnector/mixpanel/token');
         $mixPanelToken = ($mixPanelToken && $mixPanelToken!=='')?$mixPanelToken:'5d46127799a0614259cb4c733f367541';
