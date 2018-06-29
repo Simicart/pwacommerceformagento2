@@ -36,4 +36,12 @@ class Simipwa extends \Magento\Framework\View\Element\Template
         return $this->getConfigValue('simipwa/homescreen/homescreen_enable');
     }
 
+    public function ManifestThemeColor(){
+        return $this->getConfigValue('simipwa/homescreen/theme_color');
+    }
+    
+    public function ManifestLogo() {
+        return $this->getConfigValue('simipwa/homescreen/home_screen_icon');
+    }
+
 }
