@@ -47,7 +47,38 @@ class SyncButton extends Field
                     document.getElementById("simipwa_analytics-link").parentElement.parentElement.style.display = "none";
                 });
             </script>';
-        
+        $actionHtml .= '
+            <script type="text/javascript">
+                function addHomeScreenWarning() {
+                    simipwa_notification_enable = document.getElementById("simipwa_notification_enable");
+                    if(simipwa_notification_enable.value == 0) {
+                        addToHomeWarning = document.getElementById("add_to_home_warning");
+                        if (!addToHomeWarning || typeof addToHomeWarning == "undefined") {
+                            homescreen_enable = document.getElementById("row_simipwa_homescreen_homescreen_enable");
+                            var addToHomeWarning = document.createElement("div");
+                                addToHomeWarning.innerHTML = "Please enable Offline Mode to open Add to Home Screen feature";
+                                addToHomeWarning.className = "add_to_home_warning";
+                                addToHomeWarning.id = "add_to_home_warning";
+                            homescreen_enable.parentNode.insertBefore(addToHomeWarning, homescreen_enable);   
+                        } else {
+                            addToHomeWarning.style.display = "block";
+                        }
+                    } else {
+                        addToHomeWarning = document.getElementById("add_to_home_warning");
+                        if (addToHomeWarning && typeof addToHomeWarning != "undefined")
+                            addToHomeWarning.style.display = "none";
+                    }
+                }
+                
+                document.addEventListener("DOMContentLoaded", function(event) {
+                    addHomeScreenWarning();
+                    var simipwa_notification_enable = document.getElementById("simipwa_notification_enable");
+                    simipwa_notification_enable.addEventListener("change", function() {
+                        addHomeScreenWarning();
+                    });
+                });
+            </script>
+        ';
         return $actionHtml;
     }
 }

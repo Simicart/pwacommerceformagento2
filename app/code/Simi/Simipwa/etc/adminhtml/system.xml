@@ -29,22 +29,28 @@
                 <field id="homescreen_enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="*/notification/enable">1</field>
+                    </depends>
                 </field>
                 <field id="app_name" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1">
                     <label>App Name</label>
                     <depends>
+                        <field id="*/notification/enable">1</field>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
                 </field>
                 <field id="app_short_name" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1">
                     <label>App Short Name</label>
                     <depends>
+                        <field id="*/notification/enable">1</field>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
                 </field>
                 <field id="home_screen_icon" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1">
                     <label>Icon URL (png)</label>
                     <depends>
+                        <field id="*/notification/enable">1</field>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
                 </field>
@@ -52,6 +58,7 @@
                     <label>Theme Color</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Color</frontend_model>
                     <depends>
+                        <field id="*/notification/enable">1</field>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
                 </field>
@@ -59,6 +66,7 @@
                     <label>Background Color</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Color</frontend_model>
                     <depends>
+                        <field id="*/notification/enable">1</field>
                         <field id="*/*/homescreen_enable">1</field>
                     </depends>
                 </field>
