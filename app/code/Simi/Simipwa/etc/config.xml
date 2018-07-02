@@ -4,12 +4,13 @@
     <default>
         <simipwa>
             <homescreen>
+                <homescreen_enable>1</homescreen_enable>
                 <app_name>Simicart PWA</app_name>
                 <app_short_name>Simicart PWA | Progressive Web App</app_short_name>
                 <home_screen_icon>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png</home_screen_icon>
             </homescreen>
             <notification>
-                <enable>0</enable>
+                <enable>1</enable>
                 <icon_url>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png</icon_url>
             </notification>
             <general>
