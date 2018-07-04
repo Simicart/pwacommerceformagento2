@@ -270,7 +270,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         // app image
         $app_images = $config['app-configs'][0]['app_images'];
-        $app_image_logo = $scopeConfigInterface->getValue('simipwa/general/logo_homepage');
+        $app_image_logo = $scopeConfigInterface->getValue('simipwa/general/logo_url');
         if(!$app_image_logo){
             $app_image_logo = $app_images['logo'];
         }
