@@ -113,7 +113,8 @@
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
                 </field>
 
-                <field id="build_time" readonly="1" translate="label" type="text" sortOrder="9999" showInDefault="1">
+                <field id="build_time" translate="label" type="text" sortOrder="9999" showInDefault="1" >
+                    <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Readonly</frontend_model>
                     <label>Build Time</label>
                 </field>
             </group>
