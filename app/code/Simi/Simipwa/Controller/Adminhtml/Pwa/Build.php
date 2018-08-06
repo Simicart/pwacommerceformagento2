@@ -104,10 +104,6 @@ class Build extends Action
             if(!$app_splash_img_url){
                 $app_splash_img_url = $app_images['splash_screen'];
             }
-            if (file_get_contents($app_splash_img_url)) {
-                file_put_contents('./pwa/splash_screen_img.png',file_get_contents($app_splash_img_url));
-                $app_splash_img_url = './splash_screen_img.png';
-            }
             $app_splash_img = 
                 '<img src="'.$app_splash_img_url.'" alt="Splash Screen" style="width: 325px;height: auto">';
 
@@ -115,11 +111,8 @@ class Build extends Action
             if(!$app_icon){
                 $app_icon = $app_images['icon'];
             }
-
-            if (file_get_contents($app_icon)) {
-                file_put_contents('./pwa/app_icon.png',file_get_contents($app_icon));
-                $app_icon = './app_icon.png';
-            }
+            $favicon = $scopeConfigInterface->getValue('simipwa/general/favicon');
+            $favicon = $favicon ? $favicon : $app_icon;
             
             //update index.html file 
             $path_to_file = './pwa/index.html';
@@ -142,7 +135,7 @@ class Build extends Action
                     ->getPageFilter()->filter($footerHtml);
                 $file_contents = str_replace('</body>', $footerHtml.'</body>', $file_contents);
             }
-            $file_contents = str_replace('/pwa/favicon.ico', $app_icon, $file_contents);
+            $file_contents = str_replace('/pwa/favicon.ico', $favicon, $file_contents);
             
             if(isset($iosId) && $iosId && $iosId!==''){
                 $file_contents = str_replace('IOS_APP_ID', $iosId, $file_contents);

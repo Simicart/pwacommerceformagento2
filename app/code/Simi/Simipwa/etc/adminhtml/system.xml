@@ -96,19 +96,31 @@
                 <field id="logo_url" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PWA Logo URL</label>
                 </field>
-                <field id="clear_cache" translate="label" type="text" sortOrder="499" showInDefault="1">
+                <field id="splash_img" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1">
+                    <label>PWA Splash Image Url (png)</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+                <field id="favicon" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1">
+                    <label>PWA Favicon Url</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+                <field id="clear_cache" translate="label" type="text" sortOrder="699" showInDefault="1">
                     <label>Action</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Form\SyncButton</frontend_model>
                 </field>
 
-                <field id="ga_token_key" translate="label" type="text" sortOrder="599" showInDefault="1">
+                <field id="ga_token_key" translate="label" type="text" sortOrder="799" showInDefault="1">
                     <label>Google Analytics Token Key</label>
                 </field>
-                <field id="custom_head" translate="label comment" sortOrder="699" type="textarea" showInStore="1" showInDefault="1" >
+                <field id="custom_head" translate="label comment" sortOrder="899" type="textarea" showInStore="1" showInDefault="1" >
                     <label>Custom Head</label>
                     <comment>Use this to add your custom content to head tag</comment>
                 </field>
-                <field id="footer_html" translate="label comment" sortOrder="799" type="editor" showInStore="1" showInDefault="1" >
+                <field id="footer_html" translate="label comment" sortOrder="999" type="editor" showInStore="1" showInDefault="1" >
                     <label>Custom Footer HTML</label>
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
                 </field>
