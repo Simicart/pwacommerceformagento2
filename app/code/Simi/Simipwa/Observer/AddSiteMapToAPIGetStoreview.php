@@ -30,6 +30,7 @@ class AddSiteMapToAPIGetStoreview implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        return;
         $observerObject = $observer->getObject();
         $data = $observerObject->getData();
         if (isset($data['params']) && isset($data['params']['pwa'])) {

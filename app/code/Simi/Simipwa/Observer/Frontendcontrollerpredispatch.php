@@ -135,7 +135,22 @@ class Frontendcontrollerpredispatch implements ObserverInterface
     public function prerenderHeader() {
         try {
             $objectManager = $this->simiObjectManager;
-            $preloadData = [];
+            $manifestContent = file_get_contents('./pwa/assets-manifest.json');
+            if ($manifestContent && $manifestJsFiles = json_decode($manifestContent, true)) {
+                if (isset($manifestJsFiles['Products.js'])) {
+                    $productsJs = $manifestJsFiles['Products.js'];
+                }
+                if (isset($manifestJsFiles['Product.js'])) {
+                    $productJs = $manifestJsFiles['Product.js'];
+                }
+                if (isset($manifestJsFiles['HomeBase.js'])) {
+                    $homeJs = $manifestJsFiles['HomeBase.js'];
+                }
+            }
+
+            $preloadData = array('preload_js'=>array());
+
+            
             $uri = $_SERVER['REQUEST_URI'];
 
             $uriparts = explode("pwa/", $uri);
@@ -157,6 +172,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                     if ($product->getId()) {
                         $preloadData['meta_title'] = $product->getMetaTitle()?$product->getMetaTitle():$product->getName();
                         $preloadData['meta_description'] = $product->getMetaDescription()?$product->getMetaDescription():substr($product->getDescription(), 0, 255);
+                        $preloadData['preload_js'][] = $productJs;
                     }
                 } else if ($match->getEntityType() == 'category') {
                     $category = $objectManager->get('Magento\Catalog\Model\Category')->load($match->getEntityId());
@@ -180,6 +196,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                         $metaTitle = implode(' - ', $metaTitle);
                         $preloadData['meta_title'] = $metaTitle?$metaTitle:$category->getName();
                         $preloadData['meta_description'] = $preloadData['meta_title'];
+                        $preloadData['preload_js'][] = $productsJs;
                     }
                 }
             }
@@ -195,6 +212,16 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         if (isset($preloadData['meta_description'])){
             $headerString .= '<meta name="description" content="'.$preloadData['meta_description'].'"/>';
         }
+        if (!count($preloadData['preload_js'])) {
+            $preloadData['preload_js'][] = $homeJs;
+        }
+
+        if (count($preloadData['preload_js'])) {
+            foreach ($preloadData['preload_js'] as $preload_js) {
+                $headerString.= '<link rel="preload" as="script" href="/pwa/' . $preload_js . '">';
+            }
+        }
+        
         return $headerString;
     }
 
