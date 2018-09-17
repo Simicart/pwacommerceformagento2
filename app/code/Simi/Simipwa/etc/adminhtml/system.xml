@@ -114,7 +114,7 @@
                 </field>
 
                 <field id="ga_token_key" translate="label" type="text" sortOrder="799" showInDefault="1">
-                    <label>Google Analytics Token Key</label>
+                    <label>Google Analytics Tracking ID</label>
                 </field>
                 <field id="custom_head" translate="label comment" sortOrder="899" type="textarea" showInStore="1" showInDefault="1" >
                     <label>Custom Head</label>
