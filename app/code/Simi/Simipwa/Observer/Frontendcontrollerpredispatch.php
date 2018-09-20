@@ -135,6 +135,8 @@ class Frontendcontrollerpredispatch implements ObserverInterface
     public function prerenderHeader() {
         try {
             $objectManager = $this->simiObjectManager;
+            $homeJs = null;
+            $productsJs = null;
             $manifestContent = file_get_contents('./pwa/assets-manifest.json');
             if ($manifestContent && $manifestJsFiles = json_decode($manifestContent, true)) {
                 if (isset($manifestJsFiles['Products.js'])) {
@@ -218,7 +220,8 @@ class Frontendcontrollerpredispatch implements ObserverInterface
 
         if (count($preloadData['preload_js'])) {
             foreach ($preloadData['preload_js'] as $preload_js) {
-                $headerString.= '<link rel="preload" as="script" href="/pwa/' . $preload_js . '">';
+                if ($preload_js)
+                    $headerString.= '<link rel="preload" as="script" href="/pwa/' . $preload_js . '">';
             }
         }
         
