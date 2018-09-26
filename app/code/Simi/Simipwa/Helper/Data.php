@@ -383,4 +383,70 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             ->get('Magento\Framework\App\Cache\TypeListInterface')
             ->cleanType('config');
     }
+
+    public function updateManifest()
+    {
+        $scopeConfigInterface = $this->objectManager
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+
+        $name = $scopeConfigInterface->getValue('simipwa/homescreen/app_name')?
+            $scopeConfigInterface->getValue('simipwa/homescreen/app_name') : 'Progressive Web App';
+        $short_name = $scopeConfigInterface->getValue('simipwa/homescreen/app_short_name')?
+            $scopeConfigInterface->getValue('simipwa/homescreen/app_short_name') : 'PWA';
+        $default_icon = '/pwa/images/default_icon_512_512.png';
+        $icon =  $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon')?
+            $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon') : $default_icon;
+        $start_url = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?
+            '/' : '/pwa/';
+
+        $theme_color = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color')?
+            $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') : '#3399cc';
+        $background_color = $scopeConfigInterface->getValue('simipwa/homescreen/background_color')?
+            $scopeConfigInterface->getValue('simipwa/homescreen/background_color') : '#ffffff';
+        $content = "{
+              \"short_name\": \"$short_name\",
+              \"name\": \"$name\",
+              \"icons\": [
+                {
+                  \"src\": \"$icon\",
+                  \"sizes\": \"192x192\",
+                  \"type\": \"image/png\"
+                },
+                {
+                  \"src\": \"$icon\",
+                  \"sizes\": \"256x256\",
+                  \"type\": \"image/png\"
+                },
+                {
+                  \"src\": \"$icon\",
+                  \"sizes\": \"384x384\",
+                  \"type\": \"image/png\"
+                },
+                {
+                  \"src\": \"$icon\",
+                  \"sizes\": \"512x512\",
+                  \"type\": \"image/png\"
+                }
+              ],
+              \"start_url\": \"$start_url\",
+              \"display\": \"standalone\",
+              \"theme_color\": \"$theme_color\",
+              \"background_color\": \"$background_color\",
+              \"gcm_sender_id\" : \"832571969235\"
+            }";
+        $this->updateFile('./pwa/manifest.json',$content); // for pwa
+        $this->updateFile('./manifest.json',$content); // for free version
+    }
+
+    public function updateFile($url,$content){
+        $filePath = $url;
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+        $file = @fopen($filePath, 'w+');
+        if ($file) {
+            file_put_contents($filePath, $content);
+        }
+    }
+
 }

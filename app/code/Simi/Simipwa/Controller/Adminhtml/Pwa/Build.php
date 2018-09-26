@@ -152,11 +152,19 @@ class Build extends Action
                 $file_contents = str_replace('GOOGLE_APP_ID',$androidId,$file_contents);
             }
             $iconUrl = $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon');
+
             $file_contents = str_replace('/pwa/images/default_icon_512_512.png',$iconUrl,$file_contents);
             file_put_contents($path_to_file,$file_contents);
 
+            $pwaHelper = $this->_objectManager->get('Simi\Simipwa\Helper\Data');
+
+            //update manifest.jon
+            if ($scopeConfigInterface->getValue('simipwa/homescreen/homescreen_enable')) {
+                $pwaHelper->updateManifest();
+            }
+
             //update config.js file
-            $this->_objectManager->get('Simi\Simipwa\Helper\Data')->updateConfigJsFile($config);
+            $pwaHelper->updateConfigJsFile($config);
             $this->messageManager->addSuccess(__('PWA Application was Built Successfully.'));
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
