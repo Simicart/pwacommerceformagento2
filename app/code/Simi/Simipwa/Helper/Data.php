@@ -230,8 +230,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->countryCollectionFactory->create();
     }
 
-    public function updateConfigJsFile($config)
+    public function updateConfigJsFile($config, $buildTime)
     {
+        if (!$buildTime)
+            $buildTime = time();
+
         $scopeConfigInterface = $this->objectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $token = $scopeConfigInterface->getValue('simiconnector/general/token_key');
@@ -240,7 +243,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
             throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
 
-        $buildTime = time();
         $url = $config['app-configs'][0]['url'];
         if ($config['app-configs'][0]['ios_link']) {
             try {

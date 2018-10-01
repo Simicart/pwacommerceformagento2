@@ -20,9 +20,6 @@ class Build extends Action
             $token =  $scopeConfigInterface->getValue('simiconnector/general/token_key');
             $secret_key =  $scopeConfigInterface->getValue('simiconnector/general/secret_key');
             $logoUrlSetting = $scopeConfigInterface->getValue('simipwa/general/logo_url');
-            $app_image_logo = ($logoUrlSetting && $logoUrlSetting!='')?
-                $logoUrlSetting:
-                $this->_objectManager->get('\Magento\Theme\Block\Html\Header\Logo')->getLogoSrc();
 
             if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
                 throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
@@ -164,7 +161,7 @@ class Build extends Action
             }
 
             //update config.js file
-            $pwaHelper->updateConfigJsFile($config);
+            $pwaHelper->updateConfigJsFile($config, $buildTime);
             $this->messageManager->addSuccess(__('PWA Application was Built Successfully.'));
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
