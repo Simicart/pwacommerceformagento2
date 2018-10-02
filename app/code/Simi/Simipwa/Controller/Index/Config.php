@@ -33,6 +33,11 @@ class Config extends \Magento\Framework\App\Action\Action
         $build_time = $scopeConfigInterface->getValue('simipwa/general/build_time')?
             $scopeConfigInterface->getValue('simipwa/general/build_time') : 0;
 
+        if(!$this->_getCheckoutSession()->getData('simiconnector_platform') ||
+            $this->_getCheckoutSession()->getData('simiconnector_platform') != 'pwa') {
+            $this->_getCheckoutSession()->setData('simiconnector_platform', 'pwa');
+        }
+
         $result = array(
             'pwa' => array(
                 //notification and offline
@@ -45,6 +50,11 @@ class Config extends \Magento\Framework\App\Action\Action
 
         $this->getResponse()->setHeader('Content-type', 'application/json', true);
         return $this->getResponse()->setBody(json_encode($result));
+    }
+
+    public function _getCheckoutSession()
+    {
+        return $this->_objectManager->create('Magento\Checkout\Model\Session');
     }
 
 }
