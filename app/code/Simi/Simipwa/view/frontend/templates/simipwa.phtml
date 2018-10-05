@@ -2,7 +2,7 @@
     <script type="text/javascript">
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             console.log('Service Worker and Push is supported');
-            var sw = "<?php echo $block->getBaseUrl() ?>" + "sw.js";
+            var sw = "<?php echo $block->getBaseUrl() ?>" + "simipwa-sw.js";
             navigator.serviceWorker.register(sw)
                 .then(function (swReg) {
                     console.log('Service Worker is registered', '');
@@ -13,7 +13,7 @@
                         swReg.update();
                     }
                     swRegistration.onupdatefound = function () {
-                        const installingWorker = swRegistration.installing;
+                        var installingWorker = swRegistration.installing;
                         installingWorker.onstatechange = function (){
                             if (installingWorker.state === 'installed') {
                                 if (navigator.serviceWorker.controller) {
@@ -38,11 +38,14 @@
 <?php else:?>
     <script type="text/javascript">
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(registration => {
-                console.log('Service Worker has been deleted');
-            registration.unregister();
-            window.location.reload();
-        });
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(var sw of registrations) {
+                    if(sw.active.scriptURL.indexOf('/simipwa-sw.js') > -1){
+                        console.log('Simi Service Worker has been deleted');
+                        sw.unregister();
+                    }
+                }
+            })
         }
     </script>
 <?php endif ?>
@@ -52,7 +55,7 @@
             var link = document.createElement('link');
             link.id = 'simi-homescreen-manifest';
             link.rel = 'manifest';
-            link.href = '/manifest.json';
+            link.href = '/simi-manifest.json';
             document.head.appendChild(link);
             var meta = [
                 {

@@ -436,8 +436,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
               \"background_color\": \"$background_color\",
               \"gcm_sender_id\" : \"832571969235\"
             }";
-        $this->updateFile('./pwa/manifest.json',$content); // for pwa
-        $this->updateFile('./manifest.json',$content); // for free version
+        $this->updateFile('./pwa/simi-manifest.json',$content); // for pwa
+        $this->updateFile('./simi-manifest.json',$content); // for free version
     }
 
     public function updateFile($url,$content){

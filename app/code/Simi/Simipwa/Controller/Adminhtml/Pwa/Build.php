@@ -92,8 +92,8 @@ class Build extends Action
             }
 
             //move service worker out to root
-            $path_to_file = './pwa/service-worker.js';
-            file_put_contents('./service-worker.js',file_get_contents($path_to_file));
+            $path_to_file = './pwa/simi-sw.js';
+            file_put_contents('./simi-sw.js',file_get_contents($path_to_file));
 
             // app image
             $app_images = $config['app-configs'][0]['app_images'];

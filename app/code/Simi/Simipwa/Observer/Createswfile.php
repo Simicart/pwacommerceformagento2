@@ -204,7 +204,7 @@ class Createswfile implements ObserverInterface
         try {
             $fileToSave = $this->simiObjectManager
                     ->get('\Magento\Framework\App\Filesystem\DirectoryList')
-                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'sw.js';
+                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'simipwa-sw.js';
             if (file_exists($fileToSave)) {
                 $this->simiObjectManager
                     ->get('\Magento\Framework\Filesystem\Io\File')
@@ -267,7 +267,7 @@ class Createswfile implements ObserverInterface
             }';
             $fileToSave = $this->simiObjectManager
                     ->get('\Magento\Framework\App\Filesystem\DirectoryList')
-                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'manifest.json';
+                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'simi-manifest.json';
             if (file_exists($fileToSave)) {
                 $this->simiObjectManager
                     ->get('\Magento\Framework\Filesystem\Io\File')
@@ -278,7 +278,7 @@ class Createswfile implements ObserverInterface
         } else {
             $fileToSave = $this->simiObjectManager
                     ->get('\Magento\Framework\App\Filesystem\DirectoryList')
-                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'manifest.json';
+                    ->getPath(DirectoryList::ROOT) . \DIRECTORY_SEPARATOR . 'simi-manifest.json';
             if (file_exists($fileToSave)) {
                 $this->simiObjectManager
                     ->get('\Magento\Framework\Filesystem\Io\File')
