@@ -376,7 +376,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     var Simicart_Api = $configJson;
                 ";
 
-        $path_to_file = './pwa/js/config/config.js';
+        $directory = $this->objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
+        $rootPath  =  $directory->getRoot();
+        $path_to_file = $rootPath.'/pwa/js/config/config.js';
         file_put_contents($path_to_file, $msConfigs);
         $this->objectManager
             ->get('Magento\Framework\App\Config\Storage\WriterInterface')

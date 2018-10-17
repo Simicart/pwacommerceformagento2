@@ -29,8 +29,10 @@ class Build extends Action
                 throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
             $buildFile = 'https://dashboard.simicart.com/pwa/package.php?app_id='.$config['app-configs'][0]['app_info_id'];
-            $fileToSave = './pwa/simi_pwa_package.zip';
-            $directoryToSave = '/pwa/';
+            $directory = $this->_objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
+            $rootPath  =  $directory->getRoot();
+            $fileToSave = $rootPath.'/pwa/simi_pwa_package.zip';
+            $directoryToSave = $rootPath.'/pwa/';
             $buildTime = time();
             
             if ($config['app-configs'][0]['ios_link']) {
@@ -72,6 +74,7 @@ class Build extends Action
                 throw new \Exception(__('Sorry, we cannot get PWA package from SimiCart.'), 4);
             }
 
+
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $buildFile);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -85,14 +88,13 @@ class Build extends Action
             $zip = new \ZipArchive;
             $res = $zip->open($fileToSave);
             if ($res === TRUE) {
-                $zip->extractTo('.'.$directoryToSave);
+                $zip->extractTo($directoryToSave);
                 $zip->close();
             } else {
                 throw new \Exception(__('Sorry, we cannot extract PWA package.'), 4);
             }
-
             //move service worker out to root
-            $path_to_file = './pwa/simi-sw.js';
+            $path_to_file = $rootPath.'/pwa/simi-sw.js';
             file_put_contents('./simi-sw.js',file_get_contents($path_to_file));
 
             // app image
@@ -112,7 +114,7 @@ class Build extends Action
             $favicon = $favicon ? $favicon : $app_icon;
             
             //update index.html file 
-            $path_to_file = './pwa/index.html';
+            $path_to_file = $rootPath.'/pwa/index.html';
             $excludedPaths = $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths');
             $excludedPaths = $excludedPaths. ',' .
                 $this->_objectManager->get('Magento\Backend\Helper\Data')->getAreaFrontName();
