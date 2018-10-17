@@ -9,7 +9,7 @@
 	<li>Add icon to home screen</li>
 </ul>
 
-<img src="https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/pwa/new/03.png" alt="Magento PWA">
+<img src="https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/pwa/new/03_sep2018.png" alt="Magento PWA">
 
 <p style="color:orange;">What makes our PWA stands out from other PWA providers is the ability to inherit almost all of our native mobile app features.</p>
 
