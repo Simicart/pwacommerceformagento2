@@ -5,7 +5,7 @@
  */
 namespace Simi\Simipwa\Model\Api;
 
-use Simi\Simiconnector\Model\Api\Apiabstract;
+use Simi\Simipwa\Model\Api\Apiabstract;
 
 class Sociallogins extends Apiabstract
 {
@@ -19,6 +19,9 @@ class Sociallogins extends Apiabstract
         $data = $this->getData();
         $customerModel = $this->simiObjectManager->get('Simi\Simipwa\Model\Customermap');
         $simiCustomerHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer');
+        if (!$simiCustomerHelper || !get_class($simiCustomerHelper))
+            throw new \Exception(__('No Connector Found!'), 4);
+
         $params = $data['params'];
 
         if (isset($params['hash']) && $params['hash'] !== '' && isset($params['email']) && $params['email'] !== '') {
@@ -32,7 +35,7 @@ class Sociallogins extends Apiabstract
         $this->builderQuery = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
 
         if(!$this->builderQuery->getId()){
-            throw new \Simi\Simiconnector\Helper\SimiException(__('Login Failed'), 4);
+            throw new \Exception(__('Login Failed'), 4);
         }
     }
 

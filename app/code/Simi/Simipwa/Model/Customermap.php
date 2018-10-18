@@ -108,6 +108,6 @@ class Customermap extends AbstractModel
         if ($customerMap->getId()) {
             return $this->simiObjectManager->create('Magento\Customer\Model\Customer')->load($customerMap->getCustomerId());
         }
-        throw new \Simi\Simiconnector\Helper\SimiException(__('Can not find customer'), 4);
+        throw new \Exception(__('Can not find customer'), 4);
     }
 }
