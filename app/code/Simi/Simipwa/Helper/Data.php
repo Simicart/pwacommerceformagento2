@@ -15,6 +15,9 @@ use \Magento\Directory\Model\ResourceModel\Country\CollectionFactory as CountryC
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    const BUILD_TYPE_SANDBOX = 'sandbox';
+    const BUILD_TYPE_LIVE = 'live';
+
     public $directionList;
     public $objectManager;
     public $storeManager;
@@ -230,7 +233,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->countryCollectionFactory->create();
     }
 
-    public function updateConfigJsFile($config, $buildTime)
+    public function updateConfigJsFile($config, $buildTime, $type = self::BUILD_TYPE_SANDBOX)
     {
         if (!$buildTime)
             $buildTime = time();
@@ -271,7 +274,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $gaToken = $scopeConfigInterface->getValue('simipwa/general/ga_token_key');
         $gaToken = $gaToken ? $gaToken : '';
         $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
-        $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site') ? '/' : 'pwa';
+
+        $baseName = 'pwa_sandbox';
+        if ($type != self::BUILD_TYPE_SANDBOX)
+            $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site') ? '/' : 'pwa';
 
         // app image
         $app_images = $config['app-configs'][0]['app_images'];
@@ -375,17 +381,28 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             "
                     var Simicart_Api = $configJson;
                 ";
+
         $path_to_file = './pwa/js/config/config.js';
+        if ($type == self::BUILD_TYPE_SANDBOX)
+            $path_to_file = './pwa_sandbox/js/config/config.js';
+
         file_put_contents($path_to_file, $msConfigs);
-        $this->objectManager
-            ->get('Magento\Framework\App\Config\Storage\WriterInterface')
-            ->save('simipwa/general/build_time', $buildTime);
+
+        if ($type == self::BUILD_TYPE_SANDBOX)
+            $this->objectManager
+                ->get('Magento\Framework\App\Config\Storage\WriterInterface')
+                ->save('simipwa/general/build_time_sandbox', $buildTime);
+        else
+            $this->objectManager
+                ->get('Magento\Framework\App\Config\Storage\WriterInterface')
+                ->save('simipwa/general/build_time', $buildTime);
+
         $this->objectManager
             ->get('Magento\Framework\App\Cache\TypeListInterface')
             ->cleanType('config');
     }
 
-    public function updateManifest()
+    public function updateManifest($type = self::BUILD_TYPE_SANDBOX)
     {
         $scopeConfigInterface = $this->objectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
@@ -397,7 +414,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $default_icon = '/pwa/images/default_icon_512_512.png';
         $icon =  $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon')?
             $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon') : $default_icon;
-        $start_url = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?
+        $start_url = 'pwa_sandbox';
+        if ($type != self::BUILD_TYPE_SANDBOX)
+            $start_url = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?
             '/' : '/pwa/';
 
         $theme_color = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color')?
@@ -435,8 +454,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
               \"background_color\": \"$background_color\",
               \"gcm_sender_id\" : \"832571969235\"
             }";
-        $this->updateFile('./pwa/simi-manifest.json',$content); // for pwa
-        $this->updateFile('./simi-manifest.json',$content); // for free version
+        if ($type == self::BUILD_TYPE_SANDBOX) {
+            $this->updateFile('./pwa_sandbox/simi-manifest.json', $content);
+        } else {
+            $this->updateFile('./pwa/simi-manifest.json', $content);
+        }
+        //$this->updateFile('./simi-manifest.json',$content); // for free version
     }
 
     public function updateFile($url,$content){

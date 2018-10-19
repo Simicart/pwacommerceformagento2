@@ -4,6 +4,7 @@
 namespace Simi\Simipwa\Controller\Adminhtml\Pwa;
 
 use Magento\Backend\App\Action;
+use Simi\Simipwa\Helper\Data;
 
 class Build extends Action
 {
@@ -15,11 +16,14 @@ class Build extends Action
     public function execute()
     {
         try {
+            $type = $this->getRequest()->getParam('build_type');
+            if (!$type)
+                $type = Data::BUILD_TYPE_SANDBOX;
+
             $scopeConfigInterface = $this->_objectManager
                 ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
             $token =  $scopeConfigInterface->getValue('simiconnector/general/token_key');
             $secret_key =  $scopeConfigInterface->getValue('simiconnector/general/secret_key');
-            $logoUrlSetting = $scopeConfigInterface->getValue('simipwa/general/logo_url');
 
             if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
                 throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
@@ -28,9 +32,16 @@ class Build extends Action
             if (!$config || (!$config = json_decode($config, 1)))
                 throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
+
             $buildFile = 'https://dashboard.simicart.com/pwa/package.php?app_id='.$config['app-configs'][0]['app_info_id'];
             $fileToSave = './pwa/simi_pwa_package.zip';
             $directoryToSave = '/pwa/';
+            if ($type == Data::BUILD_TYPE_SANDBOX) {
+                $buildFile = 'https://dashboard.simicart.com/pwa/sandbox_package.php?app_id='.$config['app-configs'][0]['app_info_id'];
+                $fileToSave = './pwa_sandbox/simi_pwa_package.zip';
+                $directoryToSave = '/pwa_sandbox/';
+            }
+
             $buildTime = time();
             
             if ($config['app-configs'][0]['ios_link']) {
@@ -91,9 +102,12 @@ class Build extends Action
             } else {
                 throw new \Exception(__('Sorry, we cannot extract PWA package.'), 4);
             }
-            //move service worker out to root
-            $path_to_file = './pwa/simi-sw.js';
-            file_put_contents('./simi-sw.js',file_get_contents($path_to_file));
+
+            if ($type != Data::BUILD_TYPE_SANDBOX) {
+                //move service worker out to root
+                $path_to_file = './pwa/simi-sw.js';
+                file_put_contents('./simi-sw.js', file_get_contents($path_to_file));
+            }
 
             // app image
             $app_images = $config['app-configs'][0]['app_images'];
@@ -113,6 +127,9 @@ class Build extends Action
             
             //update index.html file
             $path_to_file = './pwa/index.html';
+            if ($type == Data::BUILD_TYPE_SANDBOX) {
+                $path_to_file = './pwa_sandbox/index.html';
+            }
             $excludedPaths = $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths');
             $excludedPaths = $excludedPaths. ',' .
                 $this->_objectManager->get('Magento\Backend\Helper\Data')->getAreaFrontName();
@@ -157,12 +174,18 @@ class Build extends Action
 
             //update manifest.jon
             if ($scopeConfigInterface->getValue('simipwa/homescreen/homescreen_enable')) {
-                $pwaHelper->updateManifest();
+                $pwaHelper->updateManifest($type);
             }
 
             //update config.js file
-            $pwaHelper->updateConfigJsFile($config, $buildTime);
-            $this->messageManager->addSuccess(__('PWA Application was Built Successfully.'));
+            $pwaHelper->updateConfigJsFile($config, $buildTime, $type);
+
+            if ($type == Data::BUILD_TYPE_SANDBOX) {
+                $url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/pwa_sandbox";
+                $this->messageManager->addSuccess(__('Sandbox PWA was Built Successfully!'). '<br/>Please go to '.$url.' to review.');
+            } else {
+                $this->messageManager->addSuccess(__('Progressive Web App was Built Successfully.'));
+            }
         } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
         }

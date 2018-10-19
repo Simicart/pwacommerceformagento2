@@ -2,6 +2,7 @@
 
 
 namespace Simi\Simipwa\Block\System\Config\Form;
+use Simi\Simipwa\Helper\Data;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
@@ -18,27 +19,34 @@ class SyncButton extends Field
     {
         $actionHtml = '';
         if (class_exists('Simi\Simiconnector\Controller\Rest\V2')) {
-            $button = $this->getLayout()->createBlock(
+            $sandboxBuildButton = $this->getLayout()->createBlock(
                 'Magento\Backend\Block\Widget\Button'
             )->setData(
                 [
-                    'id' => 'clear_mobile_cache',
-                    'label' => __('Sync Sitemaps'),
-                    'onclick' => 'setLocation(\'' . $this->getUrl('simipwaadmin/cache/delete') . '\')',
+                    'id' => 'build_sandbox_pwa',
+                    'label' => __('Build Sandbox PWA'),
+                    'onclick' => 'setLocation(\'' . $this->getUrl('simipwaadmin/pwa/build',['build_type' => Data::BUILD_TYPE_SANDBOX]) . '\')',
                 ]
             );
-            $actionHtml .=  $button->toHtml();
-        
+            $actionHtml .= $sandboxBuildButton->toHtml();
+
             $buildButton = $this->getLayout()->createBlock(
                 'Magento\Backend\Block\Widget\Button'
             )->setData(
                 [
                     'id' => 'build_pwa',
-                    'label' => __('Build PWA'),
-                    'onclick' => 'setLocation(\'' . $this->getUrl('simipwaadmin/pwa/build') . '\')',
+                    'label' => __('Build Live PWA'),
+                    'class'   => 'primary',
+                    'onclick' => '
+                        var r = confirm("'.__('Are you sure to Build and go Live? This will change your public Website PWA').'");
+                        if (r == true) {
+                            setLocation(\'' . $this->getUrl('simipwaadmin/pwa/build',['build_type' => Data::BUILD_TYPE_LIVE]) . '\')
+                        }
+                    ',
                 ]
             );
             $actionHtml .= $buildButton->toHtml();
+
         } else
             $actionHtml.= '
             <script type="text/javascript">

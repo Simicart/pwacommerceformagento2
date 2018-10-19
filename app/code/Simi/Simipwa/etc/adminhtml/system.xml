@@ -58,7 +58,7 @@
                 <field id="pwa_main_url_site" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Redirection</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Redirect mobile users to your PWA. (Please click Build PWA after Save)</comment>
+                    <comment>Redirect mobile users to your Live PWA. (Please click Build Live PWA after Save)</comment>
                     <depends>
                         <field id="*/*/pwa_enable">1</field>
                     </depends>
@@ -68,29 +68,15 @@
                     <comment>Separated by comma, Users with IP listed above would be redirected. Leave this empty to redirect ALL users</comment>
                     <depends>
                         <field id="*/*/pwa_enable">1</field>
+                        <field id="*/*/pwa_main_url_site">1</field>
                     </depends>
                 </field>
-                <!--
-                <field id="pwa_main_url_site"  translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Use Website Domain For PWA</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <depends>
-                        <field id="*/*/pwa_enable">1</field>
-                    </depends>
-                </field>
-                <field id="pwa_url" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>PWA Homepage URL</label>
-                    <depends>
-                        <field id="*/*/pwa_main_url_site">0</field>
-                        <field id="*/*/pwa_enable">1</field>
-                    </depends>
-                </field>
-                -->
                 <field id="pwa_excluded_paths" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PWA Excluded Paths</label>
                     <comment>Separated by comma, urls that contain any of the keys above would be excluded from Web App. Eg: checkout/onepage</comment>
                     <depends>
                         <field id="*/*/pwa_enable">1</field>
+                        <field id="*/*/pwa_main_url_site">1</field>
                     </depends>
                 </field>
                 <field id="logo_url" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -108,26 +94,99 @@
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="clear_cache" translate="label" type="text" sortOrder="699" showInDefault="1">
+                <field id="pwa_action" translate="label" type="text" sortOrder="699" showInDefault="1">
                     <label>Action</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Form\SyncButton</frontend_model>
                 </field>
-
-                <field id="ga_token_key" translate="label" type="text" sortOrder="799" showInDefault="1">
+                <field id="build_time" translate="label" type="text" sortOrder="799" showInDefault="1" >
+                    <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Readonly</frontend_model>
+                    <label>Live Build Time</label>
+                </field>
+                <field id="build_time_sandbox" translate="label" type="text" sortOrder="899" showInDefault="1" >
+                    <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Readonly</frontend_model>
+                    <label>Sandbox Build Time</label>
+                </field>
+                <field id="ga_token_key" translate="label" type="text" sortOrder="999" showInDefault="1">
                     <label>Google Analytics Tracking ID</label>
                 </field>
-                <field id="custom_head" translate="label comment" sortOrder="899" type="textarea" showInStore="1" showInDefault="1" >
+                <field id="custom_head" translate="label comment" sortOrder="1099" type="textarea" showInStore="1" showInDefault="1" >
                     <label>Custom Head</label>
                     <comment>Use this to add your custom content to head tag</comment>
                 </field>
-                <field id="footer_html" translate="label comment" sortOrder="999" type="editor" showInStore="1" showInDefault="1" >
+                <field id="footer_html" translate="label comment" sortOrder="1199" type="editor" showInStore="1" showInDefault="1" >
                     <label>Custom Footer HTML</label>
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
                 </field>
+            </group>
 
-                <field id="build_time" translate="label" type="text" sortOrder="9999" showInDefault="1" >
+            <group id="general" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Advanced PWA Configuration</label>
+                <field id="pwa_enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable PWA</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Contact support@simicart.com for PWA building</comment>
+                </field>
+                <field id="pwa_main_url_site" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Redirection</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Redirect mobile users to your Live PWA. (Please click Build Live PWA after Save)</comment>
+                    <depends>
+                        <field id="*/*/pwa_enable">1</field>
+                    </depends>
+                </field>
+                <field id="pwa_redirect_ips" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PWA Redirect IP(s)</label>
+                    <comment>Separated by comma, Users with IP listed above would be redirected. Leave this empty to redirect ALL users</comment>
+                    <depends>
+                        <field id="*/*/pwa_enable">1</field>
+                        <field id="*/*/pwa_main_url_site">1</field>
+                    </depends>
+                </field>
+                <field id="pwa_excluded_paths" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PWA Excluded Paths</label>
+                    <comment>Separated by comma, urls that contain any of the keys above would be excluded from Web App. Eg: checkout/onepage</comment>
+                    <depends>
+                        <field id="*/*/pwa_enable">1</field>
+                        <field id="*/*/pwa_main_url_site">1</field>
+                    </depends>
+                </field>
+                <field id="logo_url" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PWA Logo URL</label>
+                </field>
+                <field id="splash_img" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1">
+                    <label>PWA Splash Image Url (png)</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+                <field id="favicon" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1">
+                    <label>PWA Favicon Url</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+                <field id="pwa_action" translate="label" type="text" sortOrder="699" showInDefault="1">
+                    <label>Action</label>
+                    <frontend_model>Simi\Simipwa\Block\System\Config\Form\SyncButton</frontend_model>
+                </field>
+                <field id="build_time" translate="label" type="text" sortOrder="799" showInDefault="1" >
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Readonly</frontend_model>
-                    <label>Build Time</label>
+                    <label>Live Build Time</label>
+                </field>
+                <field id="build_time_sandbox" translate="label" type="text" sortOrder="899" showInDefault="1" >
+                    <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Readonly</frontend_model>
+                    <label>Sandbox Build Time</label>
+                </field>
+                <field id="ga_token_key" translate="label" type="text" sortOrder="999" showInDefault="1">
+                    <label>Google Analytics Tracking ID</label>
+                </field>
+                <field id="custom_head" translate="label comment" sortOrder="1099" type="textarea" showInStore="1" showInDefault="1" >
+                    <label>Custom Head</label>
+                    <comment>Use this to add your custom content to head tag</comment>
+                </field>
+                <field id="footer_html" translate="label comment" sortOrder="1199" type="editor" showInStore="1" showInDefault="1" >
+                    <label>Custom Footer HTML</label>
+                    <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
                 </field>
             </group>
         </section>

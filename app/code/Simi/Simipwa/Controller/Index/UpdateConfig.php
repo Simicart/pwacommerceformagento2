@@ -4,6 +4,7 @@ namespace Simi\Simipwa\Controller\Index;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
+use Simi\Simipwa\Helper\Data;
 
 class UpdateConfig extends \Magento\Framework\App\Action\Action
 {
@@ -25,7 +26,7 @@ class UpdateConfig extends \Magento\Framework\App\Action\Action
         if (!$config || (!$config = json_decode($config, 1)))
             throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
-        $this->_objectManager->get('Simi\Simipwa\Helper\Data')->updateConfigJsFile($config, $buildTime);
+        $this->_objectManager->get('Simi\Simipwa\Helper\Data')->updateConfigJsFile($config, $buildTime, Data::BUILD_TYPE_LIVE);
 
         $result = array(
             "pwa" => array('success' => true)

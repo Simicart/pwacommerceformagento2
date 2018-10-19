@@ -19,7 +19,25 @@ class Readonly extends \Magento\Config\Block\System\Config\Form\Field
     protected function _getElementHtml(AbstractElement $element)
     {
         $element->setData('readonly',1);
-        return $element->getElementHtml();
+        $html = $element->getElementHtml();
+        $value = $element->getValue();
+        if ($value &&
+            $this->isValidTimeStamp($value) &&
+            $time = date('Y-m-d h:i:s A', $value)) {
+            $html .=
+                '<p class="note">
+                    <span>
+                        '.$time.'
+                    </span>
+                </p>';
+        }
+        return $html;
+    }
 
+    function isValidTimeStamp($timestamp)
+    {
+        return ((string) (int) $timestamp === $timestamp)
+            && ($timestamp <= PHP_INT_MAX)
+            && ($timestamp >= ~PHP_INT_MAX);
     }
 }
