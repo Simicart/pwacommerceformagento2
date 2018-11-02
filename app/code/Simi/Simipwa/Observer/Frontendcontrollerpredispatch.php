@@ -207,6 +207,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         }
 
         $headerString = '';
+        $preloadedHomejs = false;
         if (isset($preloadData['meta_title'])) {
             $headerString .= '<title>'.$preloadData['meta_title'].'</title>';
         }
@@ -215,6 +216,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             $headerString .= '<meta name="description" content="'.$preloadData['meta_description'].'"/>';
         }
         if (!count($preloadData['preload_js'])) {
+            $preloadedHomejs = true;
             $preloadData['preload_js'][] = $homeJs;
         }
 
@@ -224,7 +226,53 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                     $headerString.= '<link rel="preload" as="script" href="/pwa/' . $preload_js . '">';
             }
         }
-        
+
+        try {
+            //Add Storeview API
+            $storeviewModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Storeviews');
+            $data = [
+                'resource'       => 'storeviews',
+                'resourceid'     => 'default',
+                'params'         => ['email'=>null, 'password'=>null],
+                'contents_array' => [],
+                'is_method'      => 1, //GET
+                'module'         => 'simiconnector'
+            ];
+            $storeviewModel->setData($data);
+            $storeviewModel->setBuilderQuery();
+            $storeviewModel->setSingularKey('storeviews');
+            $storeviewModel->setPluralKey('storeviews');
+            $storeviewApi = json_encode($storeviewModel->show());
+            $headerString .= '
+            <script type="text/javascript">
+                var SIMICONNECTOR_STOREVIEW_API = '.$storeviewApi.';
+            </script>';
+
+            //Add HOME API
+            if ($preloadedHomejs) {
+                $homeModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Homes');
+                $data = [
+                    'resource'       => 'homes',
+                    'resourceid'     => '',
+                    'params'         => ['email'=>null, 'password'=>null, 'get_child_cat'=>true],
+                    'contents_array' => [],
+                    'is_method'      => 1, //GET
+                    'module'         => 'simiconnector'
+                ];
+                $homeModel->setData($data);
+                $homeModel->setBuilderQuery();
+                $homeModel->setSingularKey('homes');
+                $homeModel->setPluralKey('homes');
+                $homeAPI = json_encode($homeModel->show());
+                $headerString .= '
+            <script type="text/javascript">
+                var SIMICONNECTOR_HOME_API = '.$homeAPI.';
+            </script>';
+            }
+        }catch (\Exception $e) {
+            
+        }
+
         return $headerString;
     }
 
