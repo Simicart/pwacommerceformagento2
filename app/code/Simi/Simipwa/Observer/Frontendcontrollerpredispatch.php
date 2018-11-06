@@ -249,7 +249,8 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             </script>';
 
             //Add HOME API
-            if ($preloadedHomejs) {
+            if (false) {
+            //if ($preloadedHomejs) {
                 $homeModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Homes');
                 $data = [
                     'resource'       => 'homes',
