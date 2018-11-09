@@ -254,7 +254,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $homeModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Homes');
                 $data = [
                     'resource'       => 'homes',
-                    'resourceid'     => '',
+                    'resourceid'     => 'lite',
                     'params'         => ['email'=>null, 'password'=>null, 'get_child_cat'=>true],
                     'contents_array' => [],
                     'is_method'      => 1, //GET
