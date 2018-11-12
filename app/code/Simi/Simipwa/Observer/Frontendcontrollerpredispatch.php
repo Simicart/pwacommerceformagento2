@@ -30,6 +30,10 @@ class Frontendcontrollerpredispatch implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        $helper = $this->simiObjectManager->get('Simi\Simipwa\Helper\Data');
+
+        if(!$helper->checkUserAgent()) return;
+
         if ($this->simiObjectManager
             ->get('\Magento\Framework\Registry')
             ->registry('simipwa_checked_redirecting_once'))
