@@ -30,6 +30,20 @@ class Frontendcontrollerpredispatch implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        if ($observer->getData('request') && $controllerModule = $observer->getData('request')->getControllerModule()) {
+            $modulesAllow = array(
+                'Magento_Cms',
+                'Magento_Customer',
+                'Magento_Catalog',
+                'Magento_Checkout',
+                'Magento_Wishlist',
+                'Magento_CatalogSearch',
+                'Magento_Contact',
+            );
+            if (!in_array($controllerModule, $modulesAllow))
+                return;
+        }
+        
         $helper = $this->simiObjectManager->get('Simi\Simipwa\Helper\Data');
 
         if(!$helper->checkUserAgent()) return;
