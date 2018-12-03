@@ -6,7 +6,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Simi\Simipwa\Helper\Data;
 
-class UpdateConfig extends \Magento\Framework\App\Action\Action
+class UpdateConfig extends \Simi\Simipwa\Controller\Action
 {
     public function execute()
     {

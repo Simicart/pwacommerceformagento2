@@ -11,25 +11,15 @@ namespace Simi\Simipwa\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 
-class Register extends \Magento\Framework\App\Action\Action
+class Register extends \Simi\Simipwa\Controller\Action
 {
-
-    public $storeManager;
-
-    public function __construct(Context $context)
-    {
-        parent::__construct($context);
-        $this->storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-    }
-
     /**
      * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
      * @throws \Exception
      */
     public function execute()
     {
-        $this->zendRequest = $this->_objectManager->get('Simi\Simipwa\Helper\RequestHttp');
-        $data            = $this->zendRequest->getRawBody();
+        $data = $this->getRequest()->getContent();
         $data = (array)json_decode($data);
         $agent = $this->_objectManager->get('Simi\Simipwa\Model\Device');
         if (!$data['endpoint']) {

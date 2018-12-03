@@ -11,26 +11,14 @@ namespace Simi\Simipwa\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 
-class Delete extends \Magento\Framework\App\Action\Action
-{
-
-    public $storeManager;
-    public $zendRequest;
-
-    public function __construct(Context $context)
-    {
-        parent::__construct($context);
-        $this->storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        $this->zendRequest = $this->_objectManager->get('Simi\Simipwa\Helper\RequestHttp');
-    }
-
-    /**
+class Delete extends \Simi\Simipwa\Controller\Action
+{   /**
      * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
      * @throws \Exception
      */
     public function execute()
     {
-        $data = $this->zendRequest->getRawBody();
+        $data = $this->getRequest()->getContent();
         $dataAgent = (array)json_decode($data);
         $result = [];
         if (!$dataAgent['endpoint']) {

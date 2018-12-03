@@ -11,19 +11,8 @@ namespace Simi\Simipwa\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 
-class Message extends \Magento\Framework\App\Action\Action
+class Message extends \Simi\Simipwa\Controller\Action
 {
-
-    public $storeManager;
-    public $scopeConfigInterface;
-
-    public function __construct(Context $context)
-    {
-        parent::__construct($context);
-        $this->scopeConfigInterface = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-    }
-
     /**
      * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
      */
