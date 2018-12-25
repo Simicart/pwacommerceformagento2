@@ -70,6 +70,8 @@ class Save extends Action
                 $device_ids = [];
                 if ($data['device_id'] && ($data['device_id']!= '')) {
                     $device_ids = explode(',', $data['device_id']);
+                } else if ($data['device_id'] == '') {
+                    $device_ids = $simiObjectManager->get('Simi\Simipwa\Model\Device')->getCollection()->getAllIds();
                 }
 
                 foreach ($device_ids as $index => $device) {
