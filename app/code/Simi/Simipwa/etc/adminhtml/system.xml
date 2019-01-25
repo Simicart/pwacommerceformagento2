@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="simipwa" translate="label" sortOrder="1000">
-            <label>Simicart Pwa</label>
+            <label>Pwa</label>
         </tab>
         <section id="simipwa" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
@@ -116,6 +116,43 @@
                 <field id="footer_html" translate="label comment" sortOrder="1199" type="editor" showInStore="1" showInDefault="1" >
                     <label>Custom Footer HTML</label>
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
+                </field>
+            </group>
+            <group id="pwa_package" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Package files</label>
+                <field id="use_uploaded_package_file" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1">
+                    <label>Use Uploaded package file for live App</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="upload_pwa_package_file" translate="label" type="file" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload PWA Package file</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system/filesystem/media">pwa/packages</upload_dir>
+                    <depends>
+                        <field id="*/*/use_uploaded_package_file">1</field>
+                    </depends>
+                </field>
+                <field id="use_uploaded_package_file_sandbox" translate="label" type="select" sortOrder="299" showInDefault="1" showInWebsite="1">
+                    <label>Use Uploaded package file for Sandbox App</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="upload_pwa_package_file_sandbox" translate="label" type="file" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload PWA Package file sandbox</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system/filesystem/media">pwa/packages/sandbox</upload_dir>
+                    <depends>
+                        <field id="*/*/use_uploaded_package_file_sandbox">1</field>
+                    </depends>
+                </field>
+                <field id="use_local_config" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1">
+                    <label>Use Local Json Config</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="json_config_data" translate="label comment" sortOrder="599" type="textarea" showInStore="1" showInDefault="1" >
+                    <label>Json Config Data</label>
+                    <depends>
+                        <field id="*/*/use_local_config">1</field>
+                    </depends>
                 </field>
             </group>
         </section>
