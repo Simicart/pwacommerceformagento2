@@ -251,7 +251,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             $data = [
                 'resource'       => 'storeviews',
                 'resourceid'     => 'default',
-                'params'         => ['email'=>null, 'password'=>null],
+                'params'         => ['email'=>null, 'password'=>null, 'pwa'=>1],
                 'contents_array' => [],
                 'is_method'      => 1, //GET
                 'module'         => 'simiconnector'
