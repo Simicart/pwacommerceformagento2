@@ -340,8 +340,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	    price_color: '" . $theme['price_color'] . "',
 	    special_price_color: '" . $theme['special_price_color'] . "',
 	    icon_color: '" . $theme['icon_color'] . "',
-	    section_color: '" . $theme['section_color'] . "',
-	    status_bar_background: '" . $theme['status_bar_background'] . "',
+	    section_color: '" . $theme['section_color'] . "',status_bar_background
 	    status_bar_text: '" . $theme['status_bar_text'] . "',
 	    loading_color: '" . $theme['loading_color'] . "',
 	};
