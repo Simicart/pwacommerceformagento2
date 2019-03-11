@@ -20,7 +20,7 @@ class Build extends Action
             $scopeConfigInterface->getValue('simipwa/pwa_package/use_uploaded_package_file') &&
             $path = $scopeConfigInterface->getValue('simipwa/pwa_package/upload_pwa_package_file')
         ) {
-            $buildFile = BP . '/pub/media/pwa/packages/sandbox/' . $path;
+            $buildFile = BP . '/pub/media/pwa/packages/' . $path;
             $getFileFromLocal = true;
         } else {
             $buildFile = 'https://dashboard.simicart.com/pwa/package.php?app_id='.$config['app-configs'][0]['app_info_id'];
