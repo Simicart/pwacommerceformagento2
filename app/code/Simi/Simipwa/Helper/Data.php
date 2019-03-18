@@ -473,7 +473,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     public function getBrowser() {
-        $u_agent = $_SERVER['HTTP_USER_AGENT'];
+        $u_agent = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'';
         $bname = 'Unknown';
         $platform = 'Unknown';
         $version= "";
