@@ -28,6 +28,35 @@ class Frontendcontrollerpredispatch implements ObserverInterface
      * Add site map data to api get storeview
      * @param Observer $observer
      */
+
+    protected function _bot_detected() {
+        return (
+            isset($_SERVER['HTTP_USER_AGENT'])
+            && preg_match('/bot|crawl|slurp|spider|mediapartners/i', $_SERVER['HTTP_USER_AGENT'])
+        );
+    }
+
+    public function rendertron($mobile_browser) {
+        $actualLink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";  
+        $rendertronLink = 'https://render-tron.appspot.com/render/' . $actualLink ; 
+        /*
+        if ($mobile_browser !== 0) {
+            $rendertronLink .= '?mobile=true';
+        }
+        */
+        //$rendertronLink = 'https://render-tron.appspot.com/render/https://google.com';
+
+        $ch = curl_init();
+        $optArray = array(
+            CURLOPT_URL => $rendertronLink,
+            CURLOPT_RETURNTRANSFER => true
+        );
+        curl_setopt_array($ch, $optArray);
+        $result = curl_exec($ch);
+        echo $result;
+        exit();
+    }
+
     public function execute(Observer $observer)
     {
         if ($observer->getData('request') && $controllerModule = $observer->getData('request')->getControllerModule()) {
@@ -141,6 +170,11 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             if (($pwaContent = @file_get_contents('./pwa/index.html')) &&
                 ($response = $observer->getResponse())
             ) {
+                if ($this->_bot_detected()) {
+                    $this->rendertron($mobile_browser);
+                    return;
+                }
+
                 if ($prerenderedHeader = $this->prerenderHeader()) {
                     $pwaContent = str_replace('<head>', '<head>'.$prerenderedHeader, $pwaContent);
                 }
