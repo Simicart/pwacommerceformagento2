@@ -38,6 +38,7 @@
                 </field>
                 <field id="home_screen_icon" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1">
                     <label>Icon URL (png)</label>
+                    <comment>Icon size : 512x512</comment>
                 </field>
                 <field id="theme_color" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1">
                     <label>Theme Color</label>
