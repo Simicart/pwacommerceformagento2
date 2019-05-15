@@ -17,7 +17,7 @@
                 <pwa_enable>0</pwa_enable>
                 <dashboard_url>https://www.simicart.com</dashboard_url>
                 <pwa_mobile_only>1</pwa_mobile_only>
-                <dynamic_rendering>1</dynamic_rendering>
+                <dynamic_rendering>0</dynamic_rendering>
             </general>
         </simipwa>
     </default>
