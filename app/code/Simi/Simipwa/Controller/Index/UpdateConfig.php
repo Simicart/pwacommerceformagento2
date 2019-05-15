@@ -22,7 +22,9 @@ class UpdateConfig extends \Simi\Simipwa\Controller\Action
 
         //update config file
         $token =  $scopeConfigInterface->getValue('simiconnector/general/token_key');
-        $config = file_get_contents("https://www.simicart.com/appdashboard/rest/app_configs/bear_token/".$token.'/pwa/1');
+        $dashboard_url = $scopeConfigInterface->getValue('simiconnector/general/dashboard_url');
+        $dashboard_url = $dashboard_url?$dashboard_url:'https://www.simicart.com';
+        $config = file_get_contents($dashboard_url . "/appdashboard/rest/app_configs/bear_token/".$token.'/pwa/1');
         if (!$config || (!$config = json_decode($config, 1)))
             throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);

@@ -87,62 +87,65 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         $scopeConfigInterface = $this->simiObjectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
 
-        $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_enable');
+        $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if (!$enable)
             return;
-        $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site');
+        $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if (!$enable)
             return;
 
         $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $urlInterface = $this->simiObjectManager->get('\Magento\Framework\UrlInterface');
         
-        $redirectIps = $scopeConfigInterface->getValue('simipwa/general/pwa_redirect_ips');
+        $redirectIps = $scopeConfigInterface->getValue('simipwa/general/pwa_redirect_ips', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($redirectIps && $redirectIps!='' &&
             !in_array($_SERVER['REMOTE_ADDR'], explode(',', $redirectIps), true))
             return;
 
-        $tablet_browser = 0;
-        $mobile_browser = 0;
+        $redirect_mobile_only = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_mobile_only', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($redirect_mobile_only) {
+            $tablet_browser = 0;
+            $mobile_browser = 0;
 
-        if (preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
-            $tablet_browser++;
-        }
-
-        if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
-            $mobile_browser++;
-        }
-
-        if (isset($_SERVER['HTTP_ACCEPT']) && isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE']))
-            if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') !== false) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE'])))) {
-                $mobile_browser++;
-            }
-        $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
-        $mobile_agents = array(
-            'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
-            'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
-            'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
-            'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
-            'newt','noki','palm','pana','pant','phil','play','port','prox',
-            'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
-            'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
-            'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
-            'wapr','webc','winw','winw','xda ','xda-');
-
-        if (in_array($mobile_ua,$mobile_agents)) {
-            $mobile_browser++;
-        }
-
-        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'opera mini') !== false) {
-            $mobile_browser++;
-            //Check for tablets on opera mini alternative headers
-            $stock_ua = strtolower(isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'])?$_SERVER['HTTP_X_OPERAMINI_PHONE_UA']:(isset($_SERVER['HTTP_DEVICE_STOCK_UA'])?$_SERVER['HTTP_DEVICE_STOCK_UA']:''));
-            if (preg_match('/(tablet|ipad|playbook)|(android(?!.*mobile))/i', $stock_ua)) {
+            if (preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
                 $tablet_browser++;
             }
+
+            if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
+                $mobile_browser++;
+            }
+
+            if (isset($_SERVER['HTTP_ACCEPT']) && isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE']))
+                if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') !== false) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE'])))) {
+                    $mobile_browser++;
+                }
+            $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
+            $mobile_agents = array(
+                'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
+                'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
+                'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
+                'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
+                'newt','noki','palm','pana','pant','phil','play','port','prox',
+                'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
+                'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
+                'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
+                'wapr','webc','winw','winw','xda ','xda-');
+
+            if (in_array($mobile_ua,$mobile_agents)) {
+                $mobile_browser++;
+            }
+
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'opera mini') !== false) {
+                $mobile_browser++;
+                //Check for tablets on opera mini alternative headers
+                $stock_ua = strtolower(isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'])?$_SERVER['HTTP_X_OPERAMINI_PHONE_UA']:(isset($_SERVER['HTTP_DEVICE_STOCK_UA'])?$_SERVER['HTTP_DEVICE_STOCK_UA']:''));
+                if (preg_match('/(tablet|ipad|playbook)|(android(?!.*mobile))/i', $stock_ua)) {
+                    $tablet_browser++;
+                }
+            }
+            if(($tablet_browser == 0) && ($mobile_browser == 0))
+                return;
         }
-        if(($tablet_browser == 0) && ($mobile_browser == 0))
-            return;
 
         $uri = $_SERVER['REQUEST_URI'];
         $baseUrl = $storeManager->getStore()->getBaseUrl();
@@ -154,7 +157,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
 
         $excludedUrls = array('admin', 'simiconnector', 'simicustompayment', 'payfort', 'simipwa', 'rest/v2');
 
-        $excludedPaths = str_replace(' ', '', $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths'));
+        $excludedPaths = str_replace(' ', '', $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths', \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
         $excludedPaths = explode(',', $excludedPaths);
 
         $excludedUrls = array_merge($excludedUrls, $excludedPaths);
@@ -166,11 +169,13 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $isExcludedCase = true;
             }
         }
-        if((($tablet_browser > 0)||($mobile_browser > 0)) && !$isExcludedCase){
+        if(!$isExcludedCase){
             if (($pwaContent = @file_get_contents('./pwa/index.html')) &&
                 ($response = $observer->getResponse())
             ) {
-                if ($this->_bot_detected()) {
+
+                $dynamic_rendering = (int) $scopeConfigInterface->getValue('simipwa/general/dynamic_rendering', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                if ($dynamic_rendering && $this->_bot_detected()) {
                     $this->rendertron($mobile_browser);
                     return;
                 }
