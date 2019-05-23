@@ -14,7 +14,12 @@ class Build extends Action
         return $this->_authorization->isAllowed('Simi_Simipwa::simipwa_settings');
     }
 
+    public function pwaHelper(){
+        return $this->_objectManager->get('Simi\Simipwa\Helper\Data');
+    }
+
     public function createPackage($type, $config, $scopeConfigInterface) {
+        $rootUrl = $this->pwaHelper()->getRootUrl();
         $getFileFromLocal = false;
         if (
             $scopeConfigInterface->getValue('simipwa/pwa_package/use_uploaded_package_file') &&
@@ -25,8 +30,8 @@ class Build extends Action
         } else {
             $buildFile = 'https://dashboard.simicart.com/pwa/package.php?app_id='.$config['app-configs'][0]['app_info_id'];
         }
-        $fileToSave = './pwa/simi_pwa_package.zip';
-        $directoryToSave = '/pwa/';
+        $fileToSave = $rootUrl.'/pwa/simi_pwa_package.zip';
+        $directoryToSave = $rootUrl.'/pwa/';
         if ($type == Data::BUILD_TYPE_SANDBOX) {
             if (
                 $scopeConfigInterface->getValue('simipwa/pwa_package/use_uploaded_package_file_sandbox') &&
@@ -37,24 +42,23 @@ class Build extends Action
             } else {
                 $buildFile = 'https://dashboard.simicart.com/pwa/sandbox_package.php?app_id='.$config['app-configs'][0]['app_info_id'];
             }
-            $fileToSave = './pwa_sandbox/simi_pwa_package.zip';
-            $directoryToSave = '/pwa_sandbox/';
+            $fileToSave = $rootUrl.'/pub/pwa_sandbox/simi_pwa_package.zip';
+            $directoryToSave = $rootUrl.'/pwa_sandbox/';
         }
 
         //create directory
-        $filePath = $this->_objectManager
-                ->get('\Magento\Framework\Filesystem\DirectoryList')->getRoot() . $directoryToSave;
 
-        if (is_dir($filePath)) {
-            $this->remover_dir($filePath);
+        if (is_dir($directoryToSave)) {
+            $this->remover_dir($directoryToSave);
         }
-        mkdir($filePath, 0777, true);
+        mkdir($directoryToSave, 0777, true);
 
         if ($getFileFromLocal) {
             copy($buildFile, $fileToSave);
         } else {
             //download file
-            file_get_contents($buildFile);
+
+	        file_get_contents($buildFile);
             if (!isset($http_response_header[0]) || !is_string($http_response_header[0]) ||
                 (strpos($http_response_header[0],'200') === false)) {
                 throw new \Exception(__('Sorry, we cannot get PWA package from SimiCart.'), 4);
@@ -74,7 +78,7 @@ class Build extends Action
         $zip = new \ZipArchive;
         $res = $zip->open($fileToSave);
         if ($res === TRUE) {
-            $zip->extractTo('.'.$directoryToSave);
+            $zip->extractTo($directoryToSave);
             $zip->close();
         } else {
             throw new \Exception(__('Sorry, we cannot extract PWA package.'), 4);
@@ -85,6 +89,7 @@ class Build extends Action
     {
         try {
             $type = $this->getRequest()->getParam('build_type');
+            $rootUrl = $this->pwaHelper()->getRootUrl();
             if (!$type)
                 $type = Data::BUILD_TYPE_SANDBOX;
 
@@ -138,7 +143,7 @@ class Build extends Action
 
             if ($type != Data::BUILD_TYPE_SANDBOX) {
                 //move service worker out to root
-                $path_to_file = './pwa/simi-sw.js';
+                $path_to_file = $rootUrl.'/pwa/simi-sw.js';
                 file_put_contents('./simi-sw.js', file_get_contents($path_to_file));
             }
 
@@ -159,9 +164,9 @@ class Build extends Action
             $favicon = $favicon ? $favicon : $app_icon;
             
             //update index.html file
-            $path_to_file = './pwa/index.html';
+            $path_to_file = $rootUrl.'/pwa/index.html';
             if ($type == Data::BUILD_TYPE_SANDBOX) {
-                $path_to_file = './pwa_sandbox/index.html';
+                $path_to_file = $rootUrl.'/pwa_sandbox/index.html';
             }
             $excludedPaths = $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths');
             $excludedPaths = $excludedPaths. ',' .
@@ -183,7 +188,9 @@ class Build extends Action
                 $file_contents = str_replace('</body>', $footerHtml.'</body>', $file_contents);
             }
             $file_contents = str_replace('/pwa/favicon.ico', $favicon, $file_contents);
-            
+            $file_contents = str_replace('/pwa_sandbox/favicon.ico', $favicon, $file_contents);
+            $file_contents = str_replace('/pub/pwa/favicon.ico', $favicon, $file_contents);
+            $file_contents = str_replace('/pub/pwa_sandbox/favicon.ico', $favicon, $file_contents);
             if(isset($iosId) && $iosId && $iosId!==''){
                 $file_contents = str_replace('IOS_APP_ID', $iosId, $file_contents);
             }
@@ -200,7 +207,10 @@ class Build extends Action
             }
             $iconUrl = $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon');
 
+            $file_contents = str_replace('/pub/pwa/images/default_icon_512_512.png',$iconUrl,$file_contents);
+            $file_contents = str_replace('/pub/pwa_sandbox/images/default_icon_512_512.png',$iconUrl,$file_contents);
             $file_contents = str_replace('/pwa/images/default_icon_512_512.png',$iconUrl,$file_contents);
+            $file_contents = str_replace('/pwa_sandbox/images/default_icon_512_512.png',$iconUrl,$file_contents);
             file_put_contents($path_to_file,$file_contents);
 
             $pwaHelper = $this->_objectManager->get('Simi\Simipwa\Helper\Data');
@@ -214,7 +224,7 @@ class Build extends Action
             $pwaHelper->updateConfigJsFile($config, $buildTime, $type);
 
             if ($type == Data::BUILD_TYPE_SANDBOX) {
-                $url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/pwa_sandbox";
+                $url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/pwa-sandbox";
                 $this->messageManager->addSuccess(__('Sandbox PWA was Built Successfully!'). '<br/>Please go to '.$url.' to review.');
             } else {
                 $this->messageManager->addSuccess(__('Progressive Web App was Built Successfully.'));

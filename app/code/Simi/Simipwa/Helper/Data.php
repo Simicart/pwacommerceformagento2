@@ -220,6 +220,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return false;
     }
 
+    public function getRootUrl(){
+        $scopeConfigInterface = $this->objectManager
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $isPubFolder = $scopeConfigInterface->getValue('simipwa/general/folder_pub');
+        $rootUrl = $this->objectManager
+            ->get('\Magento\Framework\Filesystem\DirectoryList')->getRoot();
+        if($isPubFolder){
+            $rootUrl = $rootUrl.'/pub';
+        }
+        return $rootUrl;
+    }
+
     public function getBaseDir()
     {
         $path = $this->filesystem->getDirectoryRead(
@@ -291,15 +303,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $app_splash_img_url = $app_images['splash_screen'];
         }
 
-        $dashboard_url = $scopeConfigInterface->getValue('simipwa/general/dashboard_url');
-        $dashboard_url = $dashboard_url?$dashboard_url:'https://www.simicart.com';
-
         $msConfigs = '
     var PWA_CONFIG_BUILD_TIME = ' . $buildTime . ';
 	var SMCONFIGS = {
 	    merchant_url: "' . $url . '",
 	    api_path: "simiconnector/rest/v2/",
-        simicart_url: "' . $dashboard_url . '/appdashboard/rest/app_configs/",
+	    simicart_url: "https://www.simicart.com/appdashboard/rest/app_configs/",
 	    simicart_authorization: "' . $token . '",
 	    notification_api: "simipwa/index/",
 	    zopim_key: "' . $zopimKey . '",
@@ -384,11 +393,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     var Simicart_Api = $configJson;
                 ";
 
-        $path_to_file = './pwa/js/config/config.js';
-        if ($type == self::BUILD_TYPE_SANDBOX)
-            $path_to_file = './pwa_sandbox/js/config/config.js';
+        $path_to_file = $this->getRootUrl().'/pwa/js/config/config.js';
+        $path_to_file_sandbox = $this->getRootUrl().'/pwa_sandbox/js/config/config.js';
+            
+        if(file_exists($path_to_file)){
+            file_put_contents($path_to_file, $msConfigs);
+        }
 
-        file_put_contents($path_to_file, $msConfigs);
+        if(file_exists($path_to_file_sandbox)){
+            file_put_contents($path_to_file_sandbox, $msConfigs);
+        }
 
         if ($type == self::BUILD_TYPE_SANDBOX)
             $this->objectManager
