@@ -90,17 +90,17 @@ class Build extends Action
 
             $scopeConfigInterface = $this->_objectManager
                 ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-            $token =  $scopeConfigInterface->getValue('simiconnector/general/token_key');
-            $secret_key =  $scopeConfigInterface->getValue('simiconnector/general/secret_key');
+            $token = $scopeConfigInterface->getValue('simipwa/general/dashboard_token_key');
+            $token = $token?$token:$scopeConfigInterface->getValue('simiconnector/general/token_key');
 
-            if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
+            if (!$token || ($token == ''))
                 throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
             if ($scopeConfigInterface->getValue('simipwa/pwa_package/use_local_config')) {
                 $config = $scopeConfigInterface->getValue('simipwa/pwa_package/json_config_data');
                 if (!$config || (!$config = json_decode($config, 1)))
                     throw new \Exception(__('Your local json config is not valid'), 4);
             } else {
-                $dashboard_url = $scopeConfigInterface->getValue('simiconnector/general/dashboard_url');
+                $dashboard_url = $scopeConfigInterface->getValue('simipwa/general/dashboard_url');
                 $dashboard_url = $dashboard_url?$dashboard_url:'https://www.simicart.com';
                 $config = file_get_contents($dashboard_url . "/appdashboard/rest/app_configs/bear_token/".$token.'/pwa/1');
                 if (!$config || (!$config = json_decode($config, 1)))

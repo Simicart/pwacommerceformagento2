@@ -240,11 +240,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $scopeConfigInterface = $this->objectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $token = $scopeConfigInterface->getValue('simiconnector/general/token_key');
-        $secret_key = $scopeConfigInterface->getValue('simiconnector/general/secret_key');
+        $token = $scopeConfigInterface->getValue('simipwa/general/dashboard_token_key');
+        $token = $token?$token:$scopeConfigInterface->getValue('simiconnector/general/token_key');
 
-        if (!$token || !$secret_key || ($token == '') || ($secret_key == ''))
-            throw new \Exception(__('Please fill your Token and Secret key on SimiCart connector settings'), 4);
+        if (!$token || ($token == ''))
+            throw new \Exception(__('Please fill your Token on SimiCart connector settings'), 4);
 
         $url = $config['app-configs'][0]['url'];
         if ($config['app-configs'][0]['ios_link']) {
@@ -291,12 +291,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $app_splash_img_url = $app_images['splash_screen'];
         }
 
+        $dashboard_url = $scopeConfigInterface->getValue('simipwa/general/dashboard_url');
+        $dashboard_url = $dashboard_url?$dashboard_url:'https://www.simicart.com';
+
         $msConfigs = '
     var PWA_CONFIG_BUILD_TIME = ' . $buildTime . ';
 	var SMCONFIGS = {
 	    merchant_url: "' . $url . '",
 	    api_path: "simiconnector/rest/v2/",
-	    simicart_url: "https://www.simicart.com/appdashboard/rest/app_configs/",
+        simicart_url: "' . $dashboard_url . '/appdashboard/rest/app_configs/",
 	    simicart_authorization: "' . $token . '",
 	    notification_api: "simipwa/index/",
 	    zopim_key: "' . $zopimKey . '",

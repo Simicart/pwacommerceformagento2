@@ -138,6 +138,10 @@
                     <label>Dashboard URL</label>
                     <comment>Use for dashboard configuration getting on Building and PWA opening. By default, it's https://www.simicart.com</comment>
                 </field>
+                <field id="dashboard_token_key" translate="label" type="text" sortOrder="1299" showInDefault="1">
+                    <label>Dashboard Token Key</label>
+                    <comment>If it's empty, we are going to use token key from Simicart Connector</comment>
+                </field>
             </group>
             <group id="pwa_package" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1">
                 <label>Package files</label>
