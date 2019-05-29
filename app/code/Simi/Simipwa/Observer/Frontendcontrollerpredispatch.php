@@ -170,7 +170,8 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             }
         }
         if(!$isExcludedCase){
-            if (($pwaContent = @file_get_contents('./pwa/index.html')) &&
+            $pub_path = $scopeConfigInterface->getValue('simipwa/general/has_pub', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? '/pub' : '';
+            if (($pwaContent = @file_get_contents(BP . $pub_path . '/pwa/index.html')) &&
                 ($response = $observer->getResponse())
             ) {
 
@@ -194,7 +195,10 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             $objectManager = $this->simiObjectManager;
             $homeJs = null;
             $productsJs = null;
-            $manifestContent = file_get_contents('./pwa/assets-manifest.json');
+            $scopeConfigInterface = $this->simiObjectManager
+                ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+            $pub_path = $scopeConfigInterface->getValue('simipwa/general/has_pub', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? '/pub' : '';
+            $manifestContent = file_get_contents(BP . $pub_path . '/pwa/assets-manifest.json');
             if ($manifestContent && $manifestJsFiles = json_decode($manifestContent, true)) {
                 if (isset($manifestJsFiles['Products.js'])) {
                     $productsJs = $manifestJsFiles['Products.js'];

@@ -240,6 +240,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $scopeConfigInterface = $this->objectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+
+        $pub_path = $scopeConfigInterface->getValue('simipwa/general/has_pub', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? '/pub' : '';
         $token = $scopeConfigInterface->getValue('simipwa/general/dashboard_token_key');
         $token = $token?$token:$scopeConfigInterface->getValue('simiconnector/general/token_key');
 
@@ -384,9 +386,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     var Simicart_Api = $configJson;
                 ";
 
-        $path_to_file = './pwa/js/config/config.js';
+        $path_to_file = BP . $pub_path . '/pwa/js/config/config.js';
         if ($type == self::BUILD_TYPE_SANDBOX)
-            $path_to_file = './pwa_sandbox/js/config/config.js';
+            $path_to_file = BP . $pub_path . '/pwa_sandbox/js/config/config.js';
 
         file_put_contents($path_to_file, $msConfigs);
 
@@ -408,6 +410,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $scopeConfigInterface = $this->objectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $pub_path = $scopeConfigInterface->getValue('simipwa/general/has_pub', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? '/pub' : '';
 
         $name = $scopeConfigInterface->getValue('simipwa/homescreen/app_name')?
             $scopeConfigInterface->getValue('simipwa/homescreen/app_name') : 'Progressive Web App';
@@ -457,11 +460,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
               \"gcm_sender_id\" : \"832571969235\"
             }";
         if ($type == self::BUILD_TYPE_SANDBOX) {
-            $this->updateFile('./pwa_sandbox/simi-manifest.json', $content);
+            $this->updateFile(BP . $pub_path . '/pwa_sandbox/simi-manifest.json', $content);
         } else {
-            $this->updateFile('./pwa/simi-manifest.json', $content);
+            $this->updateFile(BP . $pub_path . '/pwa/simi-manifest.json', $content);
         }
-        //$this->updateFile('./simi-manifest.json',$content); // for free version
     }
 
     public function updateFile($url,$content){

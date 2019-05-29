@@ -134,6 +134,10 @@
                     <label>Custom Footer HTML</label>
                     <frontend_model>Simi\Simipwa\Block\Adminhtml\System\Config\Editor</frontend_model>
                 </field>
+                <field id="has_pub" translate="label" type="select" sortOrder="1249" showInDefault="1">
+                    <label>Use magento_root/pub as magento_root</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="dashboard_url" translate="label" type="text" sortOrder="1299" showInDefault="1">
                     <label>Dashboard URL</label>
                     <comment>Use for dashboard configuration getting on Building and PWA opening. By default, it's https://www.simicart.com</comment>
