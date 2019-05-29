@@ -76,7 +76,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         $helper = $this->simiObjectManager->get('Simi\Simipwa\Helper\Data');
 
         if(!$helper->checkUserAgent()) return;
-
+        $uri = $_SERVER['REQUEST_URI'];
         if ($this->simiObjectManager
             ->get('\Magento\Framework\Registry')
             ->registry('simipwa_checked_redirecting_once'))
@@ -90,6 +90,12 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if (!$enable)
             return;
+
+        if(strpos($uri,'pwa-sandbox') !== false){
+            $this->renderSandboxPwa($observer);
+            return;
+        }
+
         $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if (!$enable)
             return;
@@ -147,7 +153,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 return;
         }
 
-        $uri = $_SERVER['REQUEST_URI'];
+
         $baseUrl = $storeManager->getStore()->getBaseUrl();
         $currentUrl = $urlInterface->getCurrentUrl();
 
@@ -186,6 +192,15 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
                 $response->setBody($pwaContent);
             }
+        }
+    }
+
+    public function renderSandboxPwa($observer){
+        $pwaContent = @file_get_contents('./pwa_sandbox/index.html');
+        $response = $observer->getResponse();
+        if($pwaContent && $response){
+            $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
+            $response->setBody($pwaContent);
         }
     }
 
