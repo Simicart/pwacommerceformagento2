@@ -59,6 +59,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
 
     public function execute(Observer $observer)
     {
+        return;
         if ($observer->getData('request') && $controllerModule = $observer->getData('request')->getControllerModule()) {
             $modulesAllow = array(
                 'Magento_Cms',

@@ -5,7 +5,7 @@
     </head>
     <body>
         <referenceContainer name="after.body.start">
-        	<block class="Simi\Simipwa\Block\Simipwa" name="simipwa.notification.file" before="-" template="Simi_Simipwa::simipwa.phtml" />
-    </referenceContainer>
+        	<block class="Simi\Simipwa\Block\Simipwa" name="simipwa.notification.file" before="-" template="Simi_Simipwa::simipwa.phtml" cacheable="true"/>
+        </referenceContainer>
     </body>
 </page>
