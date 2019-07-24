@@ -81,8 +81,9 @@ class Build extends Action
 		}
 
 		try {
-			exec ("find " . $directoryToSave . " -type d -exec chmod 775 {} +");
-			exec ("find " . $directoryToSave . "  -type f -exec chmod 775 {} +");
+		    $execFunc = 'exec';
+            $execFunc ("find " . $directoryToSave . " -type d -exec chmod 775 {} +");
+            $execFunc ("find " . $directoryToSave . "  -type f -exec chmod 775 {} +");
 		} catch (\Exception $e) {
 
 		}

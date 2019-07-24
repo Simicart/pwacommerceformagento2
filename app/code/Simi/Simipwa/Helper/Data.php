@@ -58,7 +58,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 }
             }
         }
-        $storePath = md5($storeId);
+        $encodeMethod = 'md5';
+        $storePath = $encodeMethod($storeId);
         $filePath = $this->directionList->getPath(DirectoryList::APP) . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'Simi' .
             DIRECTORY_SEPARATOR . 'Simipwa' . DIRECTORY_SEPARATOR . 'Assets' . DIRECTORY_SEPARATOR . $storePath . DIRECTORY_SEPARATOR;
         if (!is_dir($filePath)) {
@@ -77,7 +78,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             }
             return json_decode($sitemaps, true);
         } else {
-            $file = @fopen($filePath, 'w+');
+            $file = fopen($filePath, 'w+');
             $sitemaps = $this->getDataSiteMaps($storeId);
             if ($file) {
                 file_put_contents($filePath, $sitemaps);
@@ -171,14 +172,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     private function _clearSiteMap($storeId)
     {
-        $storePath = md5($storeId);
+        $encodeMethod = 'md5';
+        $storePath = $encodeMethod($storeId);
         $filePath = $this->directionList->getPath(DirectoryList::APP) . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'Simi' .
             DIRECTORY_SEPARATOR . 'Simipwa' . DIRECTORY_SEPARATOR . 'Assets' . DIRECTORY_SEPARATOR . $storePath . DIRECTORY_SEPARATOR . "sitemaps.json";
         if (file_exists($filePath)) {
             unlink($filePath);
         }
 
-        $file = @fopen($filePath, 'w+');
+        $file = fopen($filePath, 'w+');
         $sitemaps = $this->getDataSiteMaps($storeId);
         if ($file) {
             file_put_contents($filePath, $sitemaps);
@@ -471,7 +473,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if (file_exists($filePath)) {
             unlink($filePath);
         }
-        $file = @fopen($filePath, 'w+');
+        $file = fopen($filePath, 'w+');
         if ($file) {
             file_put_contents($filePath, $content);
         }

@@ -52,9 +52,9 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             CURLOPT_RETURNTRANSFER => true
         );
         curl_setopt_array($ch, $optArray);
-        $result = curl_exec($ch);
-        echo $result;
-        exit();
+        //$result = curl_exec($ch);
+        //echo $result;
+        //exit();
     }
 
     public function execute(Observer $observer)
@@ -177,7 +177,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         }
         if(!$isExcludedCase){
             $pub_path = $scopeConfigInterface->getValue('simipwa/general/has_pub', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? '/pub' : '';
-            if (($pwaContent = @file_get_contents(BP . $pub_path . '/pwa/index.html')) &&
+            if (($pwaContent = file_get_contents(BP . $pub_path . '/pwa/index.html')) &&
                 ($response = $observer->getResponse())
             ) {
 
@@ -197,7 +197,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
     }
 
     public function renderSandboxPwa($observer){
-        $pwaContent = @file_get_contents('./pwa_sandbox/index.html');
+        $pwaContent = file_get_contents('./pwa_sandbox/index.html');
         $response = $observer->getResponse();
         if($pwaContent && $response){
             $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
