@@ -24,7 +24,13 @@ class SimiconnectorModelServerInitialize implements ObserverInterface
 
         if ($observerObjectData['resource'] == 'simipwas' || $observerObjectData['resource'] == 'sitemaps') {
             $observerObjectData['module'] = 'simipwa';
+            $observerObject->setData($observerObjectData);
+        } else {
+            $className = 'Simi\Simipwa\Model\Api\\' . ucfirst($observerObjectData['resource']);
+            if (class_exists($className)) {
+                $observerObjectData['module'] = "simipwa";
+                $observerObject->setData($observerObjectData);
+            }
         }
-        $observerObject->setData($observerObjectData);
     }
 }
