@@ -89,7 +89,6 @@ class Pwadevices extends Apiabstract
         if ($parameters && isset($data['resourceid']) && $data['resourceid'] == 'message' && isset($parameters['endpoint'])) {
             $message = $this->simiObjectManager->get('Simi\Simipwa\Model\Notification')->getMessage();
             $message_info = $message->getData();
-            var_dump($message_info);die;
             $img = null;
             if ($message_info['type'] == 1) {
                 $product = $this->simiObjectManager->get('Magento\Catalog\Model\Product')->load($message->getProductId());
