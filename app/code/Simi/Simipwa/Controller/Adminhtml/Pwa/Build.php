@@ -166,6 +166,8 @@ class Build extends Action
 			$favicon = $scopeConfigInterface->getValue('simipwa/general/favicon', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 			$favicon = $favicon ? $favicon : $app_icon;
 
+			$config['app-configs'][0]['add_home_screen'] = $scopeConfigInterface->getValue('simipwa/homescreen/homescreen_enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
 			//update index.html file
 			$path_to_file = BP . '/pwa/index.html';
 			if ($type == Data::BUILD_TYPE_SANDBOX) {
