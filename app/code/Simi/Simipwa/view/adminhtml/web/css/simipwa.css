@@ -1,0 +1,4 @@
+body .admin__menu .item-simipwa > a::before{
+    overflow: hidden;
+    content: url(../images/menu_ic.svg);
+}
