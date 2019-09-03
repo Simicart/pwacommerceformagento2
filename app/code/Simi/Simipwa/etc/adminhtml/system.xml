@@ -183,6 +183,9 @@
                         <field id="*/*/use_local_config">1</field>
                     </depends>
                 </field>
+                <field id="frontend_ip_building" translate="label" type="text" sortOrder="699" showInDefault="1" showInWebsite="1">
+                    <label>Server IP (used for building by command line from server using CURL).</label>
+                </field>
             </group>
         </section>
     </system>
