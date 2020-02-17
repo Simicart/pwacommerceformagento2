@@ -4,7 +4,7 @@
  * Copyright © 2016 Simi. All rights reserved.
  */
 
-namespace Simi\Simiconnector\Model\Api;
+namespace Simi\Simipwa\Model\Api;
 
 class Pwadevices extends Apiabstract
 {
