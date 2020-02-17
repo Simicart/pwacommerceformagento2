@@ -146,8 +146,8 @@ class Build extends \Simi\Simipwa\Controller\Action
         } catch (\Exception $e) {
             $build_result = $e->getMessage();
         }
-        echo $build_result;
-        exit();
+        $this->getResponse()->setHeader('Content-type', 'application/json', true);
+        return $this->getResponse()->setBody(json_encode($build_result));
     }
 
     public function remover_dir($dir)
