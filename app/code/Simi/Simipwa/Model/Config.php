@@ -62,8 +62,7 @@ class Config extends \Magento\Framework\DataObject
         \Magento\Framework\DB\Transaction $transaction,
         \Magento\Framework\App\Config\ValueFactory $configValueFactory,
         array $data = []
-    )
-    {
+    ) {
 
         parent::__construct($data);
         $this->storeManager = $storeManager;

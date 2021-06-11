@@ -11,6 +11,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface as StoreManager;
 use \Magento\Framework\DataObject;
+use \Simi\Simipwa\Model\DeviceFactory;
 use \Magento\Directory\Model\ResourceModel\Country\CollectionFactory as CountryCollectionFactory;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
@@ -25,19 +26,21 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public $countryCollectionFactory;
     public $fileUploaderFactory;
     public $filesystem;
+    public $deviceFactory;
 
     public function __construct(
         Context $context,
         ObjectManagerInterface $manager,
         DirectoryList $directoryList,
         StoreManager $storemanager,
+        DeviceFactory $deviceFactory,
         CountryCollectionFactory $countryCollectionFactory
-    )
-    {
+    ) {
         $this->countryCollectionFactory = $countryCollectionFactory;
         $this->directionList = $directoryList;
         $this->objectManager = $manager;
         $this->storeManager = $storemanager;
+        $this->deviceFactory = $deviceFactory;
         $this->httpFactory = $this->objectManager->create('\Magento\Framework\HTTP\Adapter\FileTransferFactory');
         $this->fileUploaderFactory = $this->objectManager
             ->create('\Magento\MediaStorage\Model\File\UploaderFactory');
@@ -237,8 +240,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function updateConfigJsFile($config, $buildTime, $type = self::BUILD_TYPE_SANDBOX)
     {
-        if (!$buildTime)
+        if (!$buildTime) {
             $buildTime = time();
+        }
 
         $scopeConfigInterface = $this->objectManager
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
@@ -247,8 +251,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $token = $scopeConfigInterface->getValue('simipwa/general/dashboard_token_key');
         $token = $token?$token:$scopeConfigInterface->getValue('simiconnector/general/token_key');
 
-        if (!$token || ($token == ''))
+        if (!$token || ($token == '')) {
             throw new \Exception(__('Please fill your Token on SimiCart connector settings'), 4);
+        }
 
         $url = $config['app-configs'][0]['url'];
         if ($config['app-configs'][0]['ios_link']) {
@@ -280,8 +285,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $zopimKey = $scopeConfigInterface->getValue('simiconnector/zopim/account_key');
 
         $baseName = 'pwa_sandbox';
-        if ($type != self::BUILD_TYPE_SANDBOX)
+        if ($type != self::BUILD_TYPE_SANDBOX) {
             $baseName = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site') ? '/' : 'pwa';
+        }
 
         // app image
         $app_images = $config['app-configs'][0]['app_images'];
@@ -356,10 +362,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
         if (isset($androidId) || isset($iosId)) {
-            if (!isset($androidId))
+            if (!isset($androidId)) {
                 $androidId = '';
-            if (!isset($iosId))
+            }
+            if (!isset($iosId)) {
                 $iosId = '';
+            }
             $msConfigs .=
                 "
     var SMART_BANNER_CONFIGS = {
@@ -389,19 +397,21 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 ";
 
         $path_to_file = BP . $pub_path . '/pwa/js/config/config.js';
-        if ($type == self::BUILD_TYPE_SANDBOX)
+        if ($type == self::BUILD_TYPE_SANDBOX) {
             $path_to_file = BP . $pub_path . '/pwa_sandbox/js/config/config.js';
+        }
 
         file_put_contents($path_to_file, $msConfigs);
 
-        if ($type == self::BUILD_TYPE_SANDBOX)
+        if ($type == self::BUILD_TYPE_SANDBOX) {
             $this->objectManager
                 ->get('Magento\Framework\App\Config\Storage\WriterInterface')
                 ->save('simipwa/general/build_time_sandbox', $buildTime);
-        else
+        } else {
             $this->objectManager
                 ->get('Magento\Framework\App\Config\Storage\WriterInterface')
                 ->save('simipwa/general/build_time', $buildTime);
+        }
 
         $this->objectManager
             ->get('Magento\Framework\App\Cache\TypeListInterface')
@@ -422,9 +432,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $icon =  $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon')?
             $scopeConfigInterface->getValue('simipwa/homescreen/home_screen_icon') : $default_icon;
         $start_url = 'pwa_sandbox';
-        if ($type != self::BUILD_TYPE_SANDBOX)
+        if ($type != self::BUILD_TYPE_SANDBOX) {
             $start_url = $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site')?
             '/' : '/pwa/';
+        }
 
         $theme_color = $scopeConfigInterface->getValue('simipwa/homescreen/theme_color')?
             $scopeConfigInterface->getValue('simipwa/homescreen/theme_color') : '#3399cc';
@@ -468,7 +479,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
 
-    public function updateFile($url,$content){
+    public function updateFile($url, $content)
+    {
         $filePath = $url;
         if (file_exists($filePath)) {
             unlink($filePath);
@@ -479,7 +491,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
 
-    public function getBrowser() {
+    public function getBrowser()
+    {
         $u_agent = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'';
         $bname = 'Unknown';
         $platform = 'Unknown';
@@ -494,27 +507,27 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
         // Next get the name of the useragent yes seperately and for good reason
         $ub = '';
-        if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) {
+        if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
             $bname = 'Internet Explorer';
             $ub = "MSIE";
-        } elseif(preg_match('/Firefox/i',$u_agent)) {
+        } elseif (preg_match('/Firefox/i', $u_agent)) {
             $bname = 'Mozilla Firefox';
             $ub = "Firefox";
-        } elseif(preg_match('/Chrome/i',$u_agent)) {
+        } elseif (preg_match('/Chrome/i', $u_agent)) {
             $bname = 'Google Chrome';
             $ub = "Chrome";
-        } elseif(preg_match('/Safari/i',$u_agent)) {
+        } elseif (preg_match('/Safari/i', $u_agent)) {
             $bname = 'Apple Safari';
             $ub = "Safari";
-        } elseif(preg_match('/Opera/i',$u_agent)) {
+        } elseif (preg_match('/Opera/i', $u_agent)) {
             $bname = 'Opera';
             $ub = "Opera";
-        } elseif(preg_match('/Netscape/i',$u_agent)) {
+        } elseif (preg_match('/Netscape/i', $u_agent)) {
             $bname = 'Netscape';
             $ub = "Netscape";
         }
         // finally get the correct version number
-        $known = array('Version', $ub, 'other');
+        $known = ['Version', $ub, 'other'];
         $pattern = '#(?<browser>' . join('|', $known) . ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
         if (!preg_match_all($pattern, $u_agent, $matches)) {
             // we have no matching number just continue
@@ -524,7 +537,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if ($i != 1) {
             //we will have two since we are not using 'other' argument yet
             //see if version is before or after the name
-            if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
+            if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
                 $version = isset($matches['version'][0])?$matches['version'][0]:'';
             } else {
                 $version = isset($matches['version'][1])?$matches['version'][1]:'';
@@ -533,35 +546,91 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $version = isset($matches['version'][0])?$matches['version'][0]:'';
         }
         // check if we have a number
-        if ($version==null || $version=="") {$version="?";}
-        return array(
+        if ($version==null || $version=="") {
+            $version="?";
+        }
+        return [
             'userAgent' => $u_agent,
             'name'      => $bname,
             'browser' => $matches['browser'],
             'version'   => $matches['version'],
             'platform'  => $platform,
             'pattern'    => $pattern
-        );
+        ];
     }
 
-    public function checkUserAgent(){
+    public function checkUserAgent()
+    {
         $agent = $this->getBrowser();
-        $excludedBrowser = array('Opera');
-        if(in_array($agent['name'], $excludedBrowser)) return false;
+        $excludedBrowser = ['Opera'];
+        if (in_array($agent['name'], $excludedBrowser)) {
+            return false;
+        }
 
         // check version Chrome : support pwa > 40
         $checkVersion = true;
         foreach ($agent['browser'] as $key => $value) {
-            if($value == 'Chrome'){
+            if ($value == 'Chrome') {
                 $version = $agent['version'][$key];
                 $version = explode('.', $version);
                 $version = (int)$version[0];
-                if($version < 40){
+                if ($version < 40) {
                     $checkVersion = false;
                     break;
                 }
             }
         }
         return $checkVersion;
+    }
+
+
+    public function send($device_id)
+    {
+        $data = [];
+        $scopeConfigInterface = $this->objectManager
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $public_key = $scopeConfigInterface->getValue('simipwa/notification/public_key');
+        $private_key = $scopeConfigInterface->getValue('simipwa/notification/private_key');
+        $device = $this->deviceFactory->create()->getCollection()
+            ->addFieldToFilter('agent_id', $device_id)
+            ->getFirstItem();
+        if (!$device->getId()) {
+            return false;
+        }
+        $device =$device->getData();
+        $data['subscription'] = [
+            "endpoint" => $device['endpoint'],
+            "expirationTime" => null,
+            "keys" => [
+                "p256dh" => $device['p256dh_key'],
+                "auth" => $device['auth_key']
+            ]
+        ];
+        $data['applicationKeys'] = [
+            "public" => $public_key,
+            "private" => $private_key
+        ];
+        $headers = [
+            //'Authorization: key=' . $api_key,
+            'Content-Type: application/json',
+            'User-Agent: PostmanRuntime/7.28.0',
+        ];
+        $data = json_encode($data);
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://web-push-codelab.glitch.me/api/send-push-msg');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $result = json_decode($result, true);
+        if ($result['success']) {
+            return true;
+        }
+        return false;
     }
 }

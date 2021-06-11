@@ -12,10 +12,11 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 
 class Delete extends \Simi\Simipwa\Controller\Action
-{   /**
-     * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
-     * @throws \Exception
-     */
+{
+   /**
+    * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface|void
+    * @throws \Exception
+    */
     public function execute()
     {
         $data = $this->getRequest()->getContent();

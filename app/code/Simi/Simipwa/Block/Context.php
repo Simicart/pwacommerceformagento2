@@ -96,8 +96,7 @@ class Context extends \Magento\Framework\View\Element\Template\Context
         \Simi\Simipwa\Model\Config $config,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Framework\UrlFactory $urlFactory
-    )
-    {
+    ) {
 
         $this->registry = $registry;
         $this->config = $config;

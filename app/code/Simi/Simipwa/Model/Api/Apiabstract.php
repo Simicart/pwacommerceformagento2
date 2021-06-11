@@ -62,8 +62,7 @@ abstract class Apiabstract
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    )
-    {
+    ) {
         $this->simiObjectManager = $simiObjectManager;
         $this->scopeConfig = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
@@ -185,13 +184,16 @@ abstract class Apiabstract
     }
 
     //Limit - dir - order
-    public function getDefaultLimit() {
+    public function getDefaultLimit()
+    {
         return self::DEFAULT_LIMIT;
     }
-    public function getDefaultDir() {
+    public function getDefaultDir()
+    {
         return self::DEFAULT_DIR;
     }
-    public function getDefaultOrder() {
+    public function getDefaultOrder()
+    {
         return $this->DEFAULT_ORDER;
     }
 
@@ -328,7 +330,7 @@ abstract class Apiabstract
 
     public function getStoreConfig($path)
     {
-        return $this->scopeConfig->getValue($path,\Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeManager->getStore()->getCode());
+        return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeManager->getStore()->getCode());
     }
 
     /**
@@ -337,8 +339,8 @@ abstract class Apiabstract
     public function getMediaUrl($media_path)
     {
         return $this->storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ) . $media_path;
+            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+        ) . $media_path;
     }
 
     //Max update to get fields

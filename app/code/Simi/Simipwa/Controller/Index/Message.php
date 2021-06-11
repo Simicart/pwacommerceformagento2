@@ -25,7 +25,7 @@ class Message extends \Simi\Simipwa\Controller\Action
         if ($message_info['type'] == 1) {
             $product = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($message->getProductId());
             $message_info['notice_url'] = $product->getProductUrl();
-        } else if ($message_info['type'] == 2) {
+        } elseif ($message_info['type'] == 2) {
             $message_info['notice_url'] = $this->_objectManager
                 ->get('\Magento\Catalog\Model\CategoryRepository')
                 ->get($message->getCategoryId())
@@ -46,7 +46,7 @@ class Message extends \Simi\Simipwa\Controller\Action
     public function getMediaUrl($media_path)
     {
         return $this->storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ) . $media_path;
+            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+        ) . $media_path;
     }
 }

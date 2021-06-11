@@ -70,20 +70,30 @@ class Save extends Action
                 $device_ids = [];
                 if ($data['device_id'] && ($data['device_id']!= '')) {
                     $device_ids = explode(',', $data['device_id']);
-                } else if ($data['device_id'] == '') {
+                } elseif ($data['device_id'] == '') {
                     $device_ids = $simiObjectManager->get('Simi\Simipwa\Model\Device')->getCollection()->getAllIds();
                 }
-
+                $sentDevices = 0;
+                $notSentDevices = 0;
                 foreach ($device_ids as $index => $device) {
-                    $send = $simiObjectManager->get('Simi\Simipwa\Model\Device')->send($device);
+                    $send = $imageHelper->send($device);
                     if (!$send) {
                         $deviceInfo = $simiObjectManager->get('Simi\Simipwa\Model\Device')->load($device);
-                        if($deviceInfo->getId()){
+                        if ($deviceInfo->getId()) {
                             $deviceInfo->delete();
                         }
 
                         unset($device_ids[$index]);
+                        $notSentDevices++;
+                    } else {
+                        $sentDevices++;
                     }
+                }
+                if ($notSentDevices > 0) {
+                    $this->messageManager->addError(__('Falure to Sent notification to ' . $notSentDevices . ' device(s)'));
+                }
+                if ($sentDevices > 0) {
+                    $this->messageManager->addSuccess(__('Sent notification to ' . $sentDevices . ' device(s)'));
                 }
                 if ($device_ids && count($device_ids)) {
                     $model->setData('device_id', implode(',', $device_ids));

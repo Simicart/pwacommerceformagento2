@@ -45,17 +45,17 @@ class Catmap extends Category
             [$this->getIdFieldName(), 'updated_at', 'children_count']
         )
             // ->join(
-            // 	['cv'=>'catalog_category_entity_varchar'],
-            // 	'e.entity_id = cv.entity_id',
-            // 	'value as category_name'
+            //     ['cv'=>'catalog_category_entity_varchar'],
+            //     'e.entity_id = cv.entity_id',
+            //     'value as category_name'
             // )->join(
-            // 	['att'=>'eav_attribute'],
-            // 	'att.attribute_id = cv.attribute_id',
-            // 	''
+            //     ['att'=>'eav_attribute'],
+            //     'att.attribute_id = cv.attribute_id',
+            //     ''
             // )->join(
-            // 	['aty'=>'eav_entity_type'],
-            // 	'aty.entity_type_id = att.entity_type_id',
-            // 	''
+            //     ['aty'=>'eav_entity_type'],
+            //     'aty.entity_type_id = att.entity_type_id',
+            //     ''
             // )
             ->joinLeft(
                 ['url_rewrite' => $this->getTable('url_rewrite')],

@@ -46,13 +46,13 @@ class AddSiteMapToAPIGetStoreview implements ObserverInterface
             */
             $scopeConfigInterface = $this->simiObjectManager
                 ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-            $info['pwa_configs'] = array(
+            $info['pwa_configs'] = [
                 'pwa_enable'=> $scopeConfigInterface->getValue('simipwa/general/pwa_enable'),
                 'pwa_url'=> $scopeConfigInterface->getValue('simipwa/general/pwa_url'),
                 'pwa_excluded_paths'=> $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths'),
-            );
+            ];
             $GATokenKey = $scopeConfigInterface->getValue('simipwa/general/ga_token_key');
-            if($GATokenKey){
+            if ($GATokenKey) {
                 $info['ga_token_key'] = $GATokenKey;
             }
             $obj->storeviewInfo = $info;

@@ -18,7 +18,7 @@ class Readonly extends \Magento\Config\Block\System\Config\Form\Field
 
     protected function _getElementHtml(AbstractElement $element)
     {
-        $element->setData('readonly',1);
+        $element->setData('readonly', 1);
         $html = $element->getElementHtml();
         $value = $element->getValue();
         if ($value &&

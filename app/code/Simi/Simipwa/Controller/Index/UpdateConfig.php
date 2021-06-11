@@ -27,14 +27,15 @@ class UpdateConfig extends \Simi\Simipwa\Controller\Action
         $dashboard_url = $scopeConfigInterface->getValue('simipwa/general/dashboard_url');
         $dashboard_url = $dashboard_url?$dashboard_url:'https://www.simicart.com';
         $config = file_get_contents($dashboard_url . "/appdashboard/rest/app_configs/bear_token/".$token.'/pwa/1');
-        if (!$config || (!$config = json_decode($config, 1)))
+        if (!$config || (!$config = json_decode($config, 1))) {
             throw new \Exception(__('We cannot connect To SimiCart, please check your filled token, or check if 
                 your server allows connections to SimiCart website'), 4);
+        }
         $this->_objectManager->get('Simi\Simipwa\Helper\Data')->updateConfigJsFile($config, $buildTime, Data::BUILD_TYPE_LIVE);
 
-        $result = array(
-            "pwa" => array('success' => true)
-        );
+        $result = [
+            "pwa" => ['success' => true]
+        ];
         $this->getResponse()->setHeader('Content-type', 'application/json', true);
         return $this->getResponse()->setBody(json_encode($result));
     }

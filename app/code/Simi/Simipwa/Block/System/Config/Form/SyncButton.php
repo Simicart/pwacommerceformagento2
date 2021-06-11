@@ -2,6 +2,7 @@
 
 
 namespace Simi\Simipwa\Block\System\Config\Form;
+
 use Simi\Simipwa\Helper\Data;
 
 use Magento\Backend\Block\Template\Context;
@@ -9,7 +10,8 @@ use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class SyncButton extends Field
-{   
+{
+
     protected function _getElementHtml(AbstractElement $element)
     {
         return $this->getButtonHtml();
@@ -18,37 +20,7 @@ class SyncButton extends Field
     public function getButtonHtml()
     {
         $actionHtml = '';
-        if (class_exists('Simi\Simiconnector\Controller\Rest\V2')) {
-            $sandboxBuildButton = $this->getLayout()->createBlock(
-                'Magento\Backend\Block\Widget\Button'
-            )->setData(
-                [
-                    'id' => 'build_sandbox_pwa',
-                    'label' => __('Build Sandbox PWA'),
-                    'onclick' => 'setLocation(\'' . $this->getUrl('simipwaadmin/pwa/build',['build_type' => Data::BUILD_TYPE_SANDBOX]) . '\')',
-                ]
-            );
-            $actionHtml .= $sandboxBuildButton->toHtml();
-
-            $buildButton = $this->getLayout()->createBlock(
-                'Magento\Backend\Block\Widget\Button'
-            )->setData(
-                [
-                    'id' => 'build_pwa',
-                    'label' => __('Build Live PWA'),
-                    'class'   => 'primary',
-                    'onclick' => '
-                        var r = confirm("'.__('Are you sure to Build and go Live? This will change your public Website PWA').'");
-                        if (r == true) {
-                            setLocation(\'' . $this->getUrl('simipwaadmin/pwa/build',['build_type' => Data::BUILD_TYPE_LIVE]) . '\')
-                        }
-                    ',
-                ]
-            );
-            $actionHtml .= $buildButton->toHtml();
-
-        } else
-            $actionHtml.= '
+        $actionHtml.= '
             <script type="text/javascript">
                 document.addEventListener("DOMContentLoaded", function(event) {
                     document.getElementById("simipwa_general-link").parentElement.parentElement.style.display = "none";

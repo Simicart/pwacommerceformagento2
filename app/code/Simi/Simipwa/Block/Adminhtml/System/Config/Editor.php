@@ -38,7 +38,7 @@ class Editor extends \Magento\Config\Block\System\Config\Form\Field
     {
         // set wysiwyg for element
         $element->setWysiwyg(true);
-        // set configuration values 
+        // set configuration values
         $element->setConfig($this->_wysiwygConfig->getConfig($element));
         return parent::_getElementHtml($element);
     }

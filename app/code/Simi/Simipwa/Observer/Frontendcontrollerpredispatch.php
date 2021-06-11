@@ -29,16 +29,18 @@ class Frontendcontrollerpredispatch implements ObserverInterface
      * @param Observer $observer
      */
 
-    protected function _bot_detected() {
+    protected function _bot_detected()
+    {
         return (
             isset($_SERVER['HTTP_USER_AGENT'])
             && preg_match('/bot|crawl|slurp|spider|mediapartners/i', $_SERVER['HTTP_USER_AGENT'])
         );
     }
 
-    public function rendertron($mobile_browser) {
-        $actualLink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";  
-        $rendertronLink = 'https://render-tron.appspot.com/render/' . $actualLink ; 
+    public function rendertron($mobile_browser)
+    {
+        $actualLink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $rendertronLink = 'https://render-tron.appspot.com/render/' . $actualLink ;
         /*
         if ($mobile_browser !== 0) {
             $rendertronLink .= '?mobile=true';
@@ -47,10 +49,10 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         //$rendertronLink = 'https://render-tron.appspot.com/render/https://google.com';
 
         $ch = curl_init();
-        $optArray = array(
+        $optArray = [
             CURLOPT_URL => $rendertronLink,
             CURLOPT_RETURNTRANSFER => true
-        );
+        ];
         curl_setopt_array($ch, $optArray);
         //$result = curl_exec($ch);
         //echo $result;
@@ -60,7 +62,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
     public function execute(Observer $observer)
     {
         if ($observer->getData('request') && $controllerModule = $observer->getData('request')->getControllerModule()) {
-            $modulesAllow = array(
+            $modulesAllow = [
                 'Magento_Cms',
                 'Magento_Customer',
                 'Magento_Catalog',
@@ -68,19 +70,23 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 'Magento_Wishlist',
                 'Magento_CatalogSearch',
                 'Magento_Contact',
-            );
-            if (!in_array($controllerModule, $modulesAllow))
+            ];
+            if (!in_array($controllerModule, $modulesAllow)) {
                 return;
+            }
         }
         
         $helper = $this->simiObjectManager->get('Simi\Simipwa\Helper\Data');
 
-        if(!$helper->checkUserAgent()) return;
+        if (!$helper->checkUserAgent()) {
+            return;
+        }
         $uri = $_SERVER['REQUEST_URI'];
         if ($this->simiObjectManager
             ->get('\Magento\Framework\Registry')
-            ->registry('simipwa_checked_redirecting_once'))
+            ->registry('simipwa_checked_redirecting_once')) {
             return;
+        }
         $this->simiObjectManager
             ->get('\Magento\Framework\Registry')
             ->register('simipwa_checked_redirecting_once', true);
@@ -88,25 +94,28 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
 
         $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_enable', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        if (!$enable)
+        if (!$enable) {
             return;
+        }
 
-        if(strpos($uri,'pwa-sandbox') !== false){
+        if (strpos($uri, 'pwa-sandbox') !== false) {
             $this->renderSandboxPwa($observer);
             return;
         }
 
         $enable = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_main_url_site', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        if (!$enable)
+        if (!$enable) {
             return;
+        }
 
         $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $urlInterface = $this->simiObjectManager->get('\Magento\Framework\UrlInterface');
         
         $redirectIps = $scopeConfigInterface->getValue('simipwa/general/pwa_redirect_ips', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($redirectIps && $redirectIps!='' &&
-            !in_array($_SERVER['REMOTE_ADDR'], explode(',', $redirectIps), true))
+            !in_array($_SERVER['REMOTE_ADDR'], explode(',', $redirectIps), true)) {
             return;
+        }
 
         $redirect_mobile_only = (int) $scopeConfigInterface->getValue('simipwa/general/pwa_mobile_only', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($redirect_mobile_only) {
@@ -121,12 +130,13 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $mobile_browser++;
             }
 
-            if (isset($_SERVER['HTTP_ACCEPT']) && isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE']))
-                if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') !== false) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE'])))) {
+            if (isset($_SERVER['HTTP_ACCEPT']) && isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE'])) {
+                if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') !== false) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) && isset($_SERVER['HTTP_PROFILE'])))) {
                     $mobile_browser++;
                 }
+            }
             $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
-            $mobile_agents = array(
+            $mobile_agents = [
                 'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
                 'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
                 'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
@@ -135,13 +145,13 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
                 'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
                 'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
-                'wapr','webc','winw','winw','xda ','xda-');
+                'wapr','webc','winw','winw','xda ','xda-'];
 
-            if (in_array($mobile_ua,$mobile_agents)) {
+            if (in_array($mobile_ua, $mobile_agents)) {
                 $mobile_browser++;
             }
 
-            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'opera mini') !== false) {
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera mini') !== false) {
                 $mobile_browser++;
                 //Check for tablets on opera mini alternative headers
                 $stock_ua = strtolower(isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'])?$_SERVER['HTTP_X_OPERAMINI_PHONE_UA']:(isset($_SERVER['HTTP_DEVICE_STOCK_UA'])?$_SERVER['HTTP_DEVICE_STOCK_UA']:''));
@@ -149,8 +159,9 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                     $tablet_browser++;
                 }
             }
-            if(($tablet_browser == 0) && ($mobile_browser == 0))
+            if (($tablet_browser == 0) && ($mobile_browser == 0)) {
                 return;
+            }
         }
 
 
@@ -161,7 +172,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             $uri = '/'.str_replace($baseUrl, '', $currentUrl);
         }
 
-        $excludedUrls = array('admin', 'simiconnector', 'simicustompayment', 'payfort', 'simipwa', 'rest/v2');
+        $excludedUrls = ['admin', 'simiconnector', 'simicustompayment', 'payfort', 'simipwa', 'rest/v2'];
 
         $excludedPaths = str_replace(' ', '', $scopeConfigInterface->getValue('simipwa/general/pwa_excluded_paths', \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
         $excludedPaths = explode(',', $excludedPaths);
@@ -175,7 +186,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 $isExcludedCase = true;
             }
         }
-        if(!$isExcludedCase){
+        if (!$isExcludedCase) {
             $pub_path = $scopeConfigInterface->getValue('simipwa/general/has_pub', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? '/pub' : '';
             if (($pwaContent = file_get_contents(BP . $pub_path . '/pwa/index.html')) &&
                 ($response = $observer->getResponse())
@@ -196,16 +207,18 @@ class Frontendcontrollerpredispatch implements ObserverInterface
         }
     }
 
-    public function renderSandboxPwa($observer){
+    public function renderSandboxPwa($observer)
+    {
         $pwaContent = file_get_contents('./pwa_sandbox/index.html');
         $response = $observer->getResponse();
-        if($pwaContent && $response){
+        if ($pwaContent && $response) {
             $response->setHeader('Content-type', 'text/html; charset=utf-8', true);
             $response->setBody($pwaContent);
         }
     }
 
-    public function prerenderHeader() {
+    public function prerenderHeader()
+    {
         try {
             $objectManager = $this->simiObjectManager;
             $homeJs = null;
@@ -226,17 +239,19 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 }
             }
 
-            $preloadData = array('preload_js'=>array());
+            $preloadData = ['preload_js'=>[]];
 
             
             $uri = $_SERVER['REQUEST_URI'];
 
             $uriparts = explode("pwa/", $uri);
-            if ($uriparts && isset($uriparts[1]))
+            if ($uriparts && isset($uriparts[1])) {
                 $uri = $uriparts[1];
+            }
             $uriparts = explode("?", $uri);
-            if ($uriparts && isset($uriparts[1]))
+            if ($uriparts && isset($uriparts[1])) {
                 $uri = $uriparts[0];
+            }
             $store = $objectManager->get('\Magento\Store\Model\StoreManagerInterface')->getStore();
             $storeId = $store->getId();
             $finder = $objectManager->get('Magento\UrlRewrite\Model\UrlFinderInterface');
@@ -252,13 +267,13 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                         $preloadData['meta_description'] = $product->getMetaDescription()?$product->getMetaDescription():substr($product->getDescription(), 0, 255);
                         $preloadData['preload_js'][] = $productJs;
                     }
-                } else if ($match->getEntityType() == 'category') {
+                } elseif ($match->getEntityType() == 'category') {
                     $category = $objectManager->get('Magento\Catalog\Model\Category')->load($match->getEntityId());
                     if ($category->getId()) {
                         $collection = $category->getResourceCollection();
                         $pathIds = array_reverse($category->getPathIds());
                         $collection->addAttributeToSelect('name');
-                        $collection->addAttributeToFilter('entity_id', array('in' => $pathIds));
+                        $collection->addAttributeToFilter('entity_id', ['in' => $pathIds]);
 
                         $group = $objectManager->get('\Magento\Store\Model\Group')->load($store->getGroupId());
                         $catNamearray = [];
@@ -266,9 +281,10 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                             $catNamearray[$cat->getId()] = $cat->getName();
                         }
                         $metaTitle = [];
-                        foreach ($pathIds as $index=>$path) {
-                            if ($path == $group->getData('root_category_id'))
+                        foreach ($pathIds as $index => $path) {
+                            if ($path == $group->getData('root_category_id')) {
                                 break;
+                            }
                             $metaTitle[] = $catNamearray[$path];
                         }
                         $metaTitle = implode(' - ', $metaTitle);
@@ -278,7 +294,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                     }
                 }
             }
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -288,7 +304,7 @@ class Frontendcontrollerpredispatch implements ObserverInterface
             $headerString .= '<title>'.$preloadData['meta_title'].'</title>';
         }
 
-        if (isset($preloadData['meta_description'])){
+        if (isset($preloadData['meta_description'])) {
             $headerString .= '<meta name="description" content="'.$preloadData['meta_description'].'"/>';
         }
         if (!count($preloadData['preload_js'])) {
@@ -298,8 +314,9 @@ class Frontendcontrollerpredispatch implements ObserverInterface
 
         if (count($preloadData['preload_js'])) {
             foreach ($preloadData['preload_js'] as $preload_js) {
-                if ($preload_js)
+                if ($preload_js) {
                     $headerString.= '<link rel="preload" as="script" href="/pwa/' . $preload_js . '">';
+                }
             }
         }
 
@@ -346,11 +363,10 @@ class Frontendcontrollerpredispatch implements ObserverInterface
                 var SIMICONNECTOR_HOME_API = '.$homeAPI.';
             </script>';
             }
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             
         }
 
         return $headerString;
     }
-
 }

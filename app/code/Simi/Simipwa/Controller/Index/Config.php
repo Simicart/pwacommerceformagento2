@@ -23,20 +23,20 @@ class Config extends \Simi\Simipwa\Controller\Action
         $build_time = $scopeConfigInterface->getValue('simipwa/general/build_time')?
             $scopeConfigInterface->getValue('simipwa/general/build_time') : 0;
 
-        if(!$this->_getCheckoutSession()->getData('simiconnector_platform') ||
+        if (!$this->_getCheckoutSession()->getData('simiconnector_platform') ||
             $this->_getCheckoutSession()->getData('simiconnector_platform') != 'pwa') {
             $this->_getCheckoutSession()->setData('simiconnector_platform', 'pwa');
         }
 
-        $result = array(
-            'pwa' => array(
+        $result = [
+            'pwa' => [
                 //notification and offline
                 'enable_noti' => (int)$scopeConfigInterface->getValue('simipwa/notification/enable'),
                 //simicart advanced pwa
                 'enable' => $enable,
                 'build_time' => (int)$build_time
-            )
-        );
+            ]
+        ];
 
         $this->getResponse()->setHeader('Content-type', 'application/json', true);
         return $this->getResponse()->setBody(json_encode($result));
@@ -46,5 +46,4 @@ class Config extends \Simi\Simipwa\Controller\Action
     {
         return $this->_objectManager->create('Magento\Checkout\Model\Session');
     }
-
 }

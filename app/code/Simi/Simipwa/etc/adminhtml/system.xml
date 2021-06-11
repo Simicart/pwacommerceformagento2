@@ -12,13 +12,27 @@
 
             <group id="notification" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1">
                 <label>Push Notification and Offline Mode</label>
-                <field id="enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1">
+                <field id="enable" translate="label" type="select" sortOrder="99" showInDefault="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Select "Yes" will enable both Push Notification and Offline Mode functions of PWA</comment>
+                    <comment><![CDATA[Select "Yes" will enable both Push Notification and Offline Mode functions of PWA. <br/><br/>Please remove pub/static/frontend directory and run deploy command after changing any configuration below. <br/><br/>If you face error saving configuration, please change the permission of the files at Simi_Simipwa::js/notification.js and your_site_root_dir/simipwa-sw.js to writable, <br/>if the file at your_site_root_dir/simipwa-sw.js does not exist, please create an empty file at that path, then save configuration again.]]></comment>
                 </field>
-                <field id="icon_url" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1">
+                <field id="icon_url" translate="label" type="text" sortOrder="499" showInDefault="1">
                     <label>Notification Icon Url (png)</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                    <comment>Image Size : 512x512px</comment>
+                </field>
+                <field id="public_key" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1">
+                    <label>Public Key</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                    <comment>Get A new pair of keys from here: https://web-push-codelab.glitch.me/ . Open "yourstoreurl.com/unregisterSw" to unregister old Service worker.</comment>
+                </field>
+                <field id="private_key" translate="label" type="text" sortOrder="699" showInDefault="1" showInWebsite="1">
+                    <label>Private Key</label>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
@@ -36,19 +50,32 @@
                 <field id="app_short_name" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1">
                     <label>App Short Name</label>
                 </field>
-                <field id="home_screen_icon" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1">
+                <field id="home_screen_icon_192" translate="label" type="text" sortOrder="499" showInDefault="1">
                     <label>Icon URL (png)</label>
-                    <comment>Image Size : 512x512 | 384x384 | 256x256</comment>
+                    <comment>Image Size : 192x192px</comment>
                 </field>
-                <field id="theme_color" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1">
+                <field id="home_screen_icon_256" translate="label" type="text" sortOrder="599" showInDefault="1">
+                    <label>Icon URL (png)</label>
+                    <comment>Image Size : 256x256px</comment>
+                </field>
+                <field id="home_screen_icon_384" translate="label" type="text" sortOrder="699" showInDefault="1">
+                    <label>Icon URL (png)</label>
+                    <comment>Image Size : 384x384px</comment>
+                </field>
+                <field id="home_screen_icon" translate="label" type="text" sortOrder="799" showInDefault="1" showInWebsite="1">
+                    <label>Icon URL (png)</label>
+                    <comment>Image Size : 512x512px</comment>
+                </field>
+                <field id="theme_color" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1">
                     <label>Theme Color</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Color</frontend_model>
                 </field>
-                <field id="background_color" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1">
+                <field id="background_color" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1">
                     <label>Background Color</label>
                     <frontend_model>Simi\Simipwa\Block\System\Config\Color</frontend_model>
                 </field>
             </group>
+            <!--
             <group id="general" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Advanced PWA Configuration</label>
                 <field id="pwa_enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1">
@@ -187,6 +214,7 @@
                     <label>Server IP (used for building by command line from server using CURL).</label>
                 </field>
             </group>
+            -->
         </section>
     </system>
 </config>

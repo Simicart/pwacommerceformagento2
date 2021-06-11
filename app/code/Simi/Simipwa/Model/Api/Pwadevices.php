@@ -4,7 +4,7 @@
  * Copyright © 2016 Simi. All rights reserved.
  */
 
-namespace Simi\Simipwa\Model\Api;
+namespace Simi\Simiconnector\Model\Api;
 
 class Pwadevices extends Apiabstract
 {
@@ -80,10 +80,11 @@ class Pwadevices extends Apiabstract
                 throw new \Exception($error, 4);
             }
         }
-        return array("message" => $result);
+        return ["message" => $result];
     }
 
-    public function show() {
+    public function show()
+    {
         $data               = $this->getData();
         $parameters = $data['params'];
         if ($parameters && isset($data['resourceid']) && $data['resourceid'] == 'message' && isset($parameters['endpoint'])) {
@@ -93,7 +94,7 @@ class Pwadevices extends Apiabstract
             if ($message_info['type'] == 1) {
                 $product = $this->simiObjectManager->get('Magento\Catalog\Model\Product')->load($message->getProductId());
                 $message_info['notice_url'] = $product->getProductUrl();
-            } else if ($message_info['type'] == 2) {
+            } elseif ($message_info['type'] == 2) {
                 $message_info['notice_url'] = $this->simiObjectManager
                     ->get('\Magento\Catalog\Model\CategoryRepository')
                     ->get($message->getCategoryId())
@@ -110,27 +111,27 @@ class Pwadevices extends Apiabstract
                 "notification" => $message_info
             ];
             return $result;
-        } else if (isset($data['resourceid']) && $data['resourceid'] == 'config') {
+        } elseif (isset($data['resourceid']) && $data['resourceid'] == 'config') {
             $scopeConfigInterface = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
             $enable = (!$scopeConfigInterface->getValue('simipwa/general/pwa_enable'))?0:1;
             $build_time = $scopeConfigInterface->getValue('simipwa/general/build_time')?
                 $scopeConfigInterface->getValue('simipwa/general/build_time') : 0;
 
-            if(!$this->_getCheckoutSession()->getData('simiconnector_platform') ||
+            if (!$this->_getCheckoutSession()->getData('simiconnector_platform') ||
                 $this->_getCheckoutSession()->getData('simiconnector_platform') != 'pwa') {
                 $this->_getCheckoutSession()->setData('simiconnector_platform', 'pwa');
             }
 
-            $result = array(
-                'pwa' => array(
+            $result = [
+                'pwa' => [
                     //notification and offline
                     'enable_noti' => (int)$scopeConfigInterface->getValue('simipwa/notification/enable'),
                     //simicart advanced pwa
                     'enable' => $enable,
                     'build_time' => (int)$build_time,
                     'pwa_studio_client_ver_number' => $scopeConfigInterface->getValue('simiconnector/general/pwa_studio_client_ver_number'),
-                )
-            );
+                ]
+            ];
             return $result;
         }
         return parent::show();
@@ -140,5 +141,4 @@ class Pwadevices extends Apiabstract
     {
         return $this->simiObjectManager->create('Magento\Checkout\Model\Session');
     }
-
 }

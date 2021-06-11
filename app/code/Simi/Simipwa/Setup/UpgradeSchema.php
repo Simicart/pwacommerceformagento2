@@ -18,7 +18,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         //handle all possible upgrade versions
 
-        if(!$context->getVersion()) {
+        if (!$context->getVersion()) {
             //no previous version found, installation, InstallSchema was just executed
             //be careful, since everything below is true for installation !
         }
