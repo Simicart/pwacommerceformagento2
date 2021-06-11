@@ -1,10 +1,3 @@
-<script>
-    var notificationJs = document.createElement('script');
-    notificationJs.type = "text/javascript";
-    notificationJs.id = 'simi-notifcation-js';
-    notificationJs.src = '/notification.js';
-    document.head.appendChild(notificationJs);
-</script>
 <?php if ($block->IsEnableForWebsite()): ?>
     <script type="text/javascript">
         if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -56,36 +49,37 @@
         }
     </script>
 <?php endif ?>
-
-<script type="text/javascript">
-    if (window && window.location &&
-        window.location.pathname.indexOf('/unregisterSw') !== -1) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
-            registration.unregister();
-            console.log('Service Worker Unregirestered');
-        }}).catch(function(err) {
-            console.log('Service Worker Unregistration failed: ', err);
-        });
-        try {
-            if(typeof(caches) !== "undefined"){
-                caches.keys().then(function(names) {
-                    for (const name of names)
-                        caches.delete(name);
-                });
+<?php if ($block->IsEnableForWebsite()): ?>
+    <script type="text/javascript">
+        if (window && window.location &&
+            window.location.pathname.indexOf('/unregisterSw') !== -1) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+                console.log('Service Worker Unregirestered');
+            }}).catch(function(err) {
+                console.log('Service Worker Unregistration failed: ', err);
+            });
+            try {
+                if(typeof(caches) !== "undefined"){
+                    caches.keys().then(function(names) {
+                        for (const name of names)
+                            caches.delete(name);
+                    });
+                }
+                navigator.serviceWorker.getRegistrations().then(
+                    function (registrations) {
+                        for (let registration of registrations) {
+                            registration.unregister();
+                        }
+                    });
+            } catch (err) {
+                console.log(err)
             }
-            navigator.serviceWorker.getRegistrations().then(
-                function (registrations) {
-                    for (let registration of registrations) {
-                        registration.unregister();
-                    }
-                });
-        } catch (err) {
-            console.log(err)
+            window.location.href = "/";
         }
-        window.location.href = "/";
-    }
-</script>
+    </script>
+<?php endif ?>
 <?php if ($block->IsEnableAddToHomescreen()): ?>
     <script type="text/javascript">
         if(!document.getElementById('simi-homescreen-manifest')) {

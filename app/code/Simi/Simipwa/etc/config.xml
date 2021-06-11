@@ -4,7 +4,7 @@
     <default>
         <simipwa>
             <homescreen>
-                <homescreen_enable>1</homescreen_enable>
+                <homescreen_enable>0</homescreen_enable>
                 <app_name>Simicart PWA</app_name>
                 <app_short_name>Simicart PWA | Progressive Web App</app_short_name>
                 <home_screen_icon>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png</home_screen_icon>
@@ -13,7 +13,7 @@
                 <home_screen_icon_384>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo384.png</home_screen_icon_384>
             </homescreen>
             <notification>
-                <enable>1</enable>
+                <enable>0</enable>
                 <icon_url>https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png</icon_url>
                 <public_key>BDX7qGhO-GQfrhjWsqWEDyW3-tA0AjIkRYSIYNUGoQzU8p43t8D0fxW_0V1ghtJQ2yOk6sYWsEq25p_p8PUXnak</public_key>
                 <private_key>aA2klDX6lGDy0yyWWQ5BGcLgZkMLObczsO7yS_olLPg</private_key>
