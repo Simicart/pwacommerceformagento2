@@ -5,9 +5,9 @@
         <observer name="simi_simipwa_controller_action_predispatch"
                   instance="Simi\Simipwa\Observer\Frontendcontrollerpredispatch" />
     </event>
-    -->
     <event name="controller_front_send_response_before">
         <observer name="simi_simipwa_controller_front_send_response_before"
                   instance="Simi\Simipwa\Observer\Frontendcontrollerpredispatch" />
     </event>
+    -->
 </config>
